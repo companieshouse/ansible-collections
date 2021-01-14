@@ -1,0 +1,89 @@
+---
+- name: Bring up docker containers
+  hosts: localhost
+  gather_facts: false
+  vars:
+    inventory:
+      - name: centos7
+        image: "geerlingguy/docker-centos7-ansible"
+      - name: centos6
+        image: "geerlingguy/docker-centos6-ansible"
+  roles:
+    - role: provision_docker
+      provision_docker_inventory: "{{ inventory }}"
+      provision_docker_privileged: True
+
+- name: Prerequisites and Test
+  hosts: 
+    - centos6
+    - centos7
+  become: true
+  pre_tasks:
+  - name: Prereq - Setup Centos6 Vault mirrors
+    copy:
+      dest: /etc/yum.repos.d/CentOS-Base.repo
+      force: yes
+      content: |
+        [base]
+        name=Base
+        baseurl=http://vault.centos.org/6.10/os/$basearch/
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+        enabled=1
+        metadata_expire=never
+        [updates]
+        name=Updates
+        baseurl=http://vault.centos.org/6.10/updates/$basearch/
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+        enabled=1
+        metadata_expire=never
+        [extras]
+        name=Extras
+        baseurl=http://vault.centos.org/6.10/extras/$basearch/
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+        enabled=1
+        metadata_expire=never
+        [contrib]
+        name=Contrib
+        baseurl=http://vault.centos.org/6.10/contrib/$basearch/
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+        enabled=0
+        metadata_expire=never
+        [centosplus]
+        name=CentOSPlus
+        baseurl=http://vault.centos.org/6.10/centosplus/$basearch/
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+        enabled=0
+        metadata_expire=never
+    when: (ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version'] == "6")
+
+  roles:
+    - epel
+    - role: "../../nagios_nrpe_client"
+      vars: 
+        nrpe_server_allowed_hosts:
+          - 127.0.0.1
+          - 10.0.0.0/8
+        nrpe_plugin_packages:
+          - nagios-plugins-nrpe
+          - nagios-plugins
+          - nagios-plugins-ntp
+          - nagios-plugins-dig
+          - nagios-plugins-load
+          - nagios-plugins-dns
+          - nagios-plugins-procs
+          - nagios-plugins-disk
+          - nagios-plugins-users
+          - nagios-plugins-ssh
+          - nagios-plugins-http
+          - nagios-plugins-swap
+        nrpe_command:
+          check_disk_all:
+            script: check_disk
+            option: -w 80 -c 90
+        nrpe_config: 
+          dont_blame_nrpe: 0

@@ -1,0 +1,99 @@
+---
+- name: Include distribution and version-specific vars.
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+      skip: true
+
+- name: Create nrpe group
+  group:
+    name: "{{ nrpe_group }}"
+    state: present
+
+- name: Create nrpe user
+  user:
+    name: "{{ nrpe_user }}"
+    groups: "{{ nrpe_group }}"
+    state: present
+
+- name: Install NRPE service
+  package:
+    name: "{{ nrpe_packages }}"
+    state: present
+
+- name: Install NRPE plugins
+  package:
+    name: "{{ nrpe_plugin_packages }}"
+    state: present
+
+- name: Set directory permissions
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: "{{ nrpe_user }}"
+    group: "{{ nrpe_group }}"
+  with_items:
+    - "{{ nrpe_dir }}"
+    - "{{ nrpe_conf_dir }}"
+    - "{{ nrpe_plugins_dir }}"
+
+- name: Set conf permissions
+  file:
+    path: "{{ nrpe_dir }}/nrpe.cfg"
+    state: file
+    mode: 0640
+    owner: "{{ nrpe_user }}"
+    group: "{{ nrpe_group }}"
+
+- name: Set user in nrpe.cfg
+  lineinfile:
+    dest: "{{ nrpe_dir }}/nrpe.cfg"
+    regexp: '^nrpe_user='
+    line: "nrpe_user={{ nrpe_user }}"
+  notify: restart nrpe service
+
+- name: Set group in nrpe.cfg
+  lineinfile:
+    dest: "{{ nrpe_dir }}/nrpe.cfg"
+    regexp: '^nrpe_group='
+    line: "nrpe_group={{ nrpe_group }}"
+  notify: restart nrpe service
+
+- name: Set allowed_hosts in nrpe.cfg
+  lineinfile:
+    dest: "{{ nrpe_dir }}/nrpe.cfg"
+    regexp: '^allowed_hosts='
+    line: "allowed_hosts={% for host in nrpe_allowed_hosts %}{{ host }}{% if not loop.last %},{% endif %}{% endfor %}"
+  notify: restart nrpe service    
+
+- name: Set include_dir in nrpe.cfg
+  lineinfile:
+    dest: "{{ nrpe_dir }}/nrpe.cfg"
+    regexp: '^include_dir='
+    line: "include_dir={{ nrpe_conf_dir }}"
+  notify: restart nrpe service
+
+- name: Set custom config in nrpe.cfg
+  lineinfile:
+    dest: "{{ nrpe_dir }}/nrpe.cfg"
+    regexp: '^{{ item.key }}='
+    line: "{{ item.key }}={{ item.value }}"
+  loop: "{{ nrpe_config | dict2items }}"
+  notify: restart nrpe service
+
+- name: Create commands config from template
+  template:
+    src: "nrpe_local.cfg.j2"
+    dest: "{{ nrpe_conf_dir }}/100_commands.cfg"
+    owner: "{{ nrpe_user }}"
+    group: "{{ nrpe_group }}"
+    mode: "0640"
+  notify: restart nrpe service
+
+- name: Ensure NRPE service is running
+  service:
+    name: "{{ nrpe_service }}"
+    state: started
+    enabled: true

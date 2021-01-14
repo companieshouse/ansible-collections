@@ -1,0 +1,6 @@
+{% if nrpe_command is defined %}
+# Commands
+{% for command in nrpe_command %}
+command[{{ command }}]={{ nrpe_plugins_dir }}/{{ nrpe_command[command]["script"] }} {{ nrpe_command[command]["option"] }}
+{% endfor %}
+{% endif %}
