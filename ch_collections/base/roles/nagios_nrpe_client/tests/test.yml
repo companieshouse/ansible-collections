@@ -23,6 +23,7 @@
     copy:
       dest: /etc/yum.repos.d/CentOS-Base.repo
       force: yes
+      mode: 0755
       content: |
         [base]
         name=Base

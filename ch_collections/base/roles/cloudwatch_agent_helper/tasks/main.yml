@@ -3,11 +3,11 @@
     name: "python"
     state: present
 
-- hosts: Copy Script
-  tasks:
-    - copy:
-        src: files/cw_log_conf.py
-        dest: "{{ script_dir if script_dir != '' else lookup('env', 'HOME') }}"
+- name: Copy Script
+  copy:
+    src: files/cw_log_conf.py
+    dest: "{{ script_dir if script_dir != '' else lookup('env', 'HOME') }}"
+    mode: 0555
 
 - name: Set rx file permissions
   file:
