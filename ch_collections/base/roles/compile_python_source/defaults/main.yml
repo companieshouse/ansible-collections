@@ -1,0 +1,18 @@
+---
+# defaults file for compile_python_source
+dependencies_packages: 
+  - make
+  - gcc
+  - openssl-devel
+  - bzip2-devel
+
+version: "3.6.6"
+major_version: "{{ version.split('.')[0] }}.{{ version.split('.')[1] }}"
+python_version_url: "https://www.python.org/ftp/python/{{ version }}/Python-{{ version }}.tgz"
+
+download_dest: "/tmp"
+archive_filename: "{{ python_version_url | basename }}"
+unarchive_filename: "{{ archive_filename | splitext | first }}"
+
+pip_url: "https://bootstrap.pypa.io/get-pip.py"
+pip_filename: "{{ pip_url | basename }}"
