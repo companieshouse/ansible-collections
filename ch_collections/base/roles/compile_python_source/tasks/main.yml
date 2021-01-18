@@ -16,9 +16,20 @@
   command: chdir="{{ download_dest }}/{{ unarchive_filename }}" ./configure --enable-optimizations
 - name: Make Python binary
   command: chdir="{{ download_dest }}/{{ unarchive_filename }}" make altinstall
+- name: Create a symbolic link for Python{{ major_version }}
+  ansible.builtin.file:
+    src: "/usr/local/bin/python{{ major_version }}"
+    dest: "/usr/bin/python{{ major_version }}"
+    state: link
+
 - name: Download PIP install script
   get_url:
     url: "{{ pip_url }}"
     dest: "{{ download_dest }}/"
 - name: Run PIP install script
   command: python"{{ major_version }}" "{{ download_dest }}/{{ pip_filename }}"
+- name: Create a symbolic link for pip{{ major_version }}
+  ansible.builtin.file:
+    src: "/usr/local/bin/pip{{ major_version }}"
+    dest: "/usr/bin/pip{{ major_version.split('.')[0]}}"
+    state: link
