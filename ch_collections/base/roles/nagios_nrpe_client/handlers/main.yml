@@ -1,0 +1,5 @@
+---
+- name: restart nrpe service
+  service:
+    name: "{{ nrpe_service }}"
+    state: restarted

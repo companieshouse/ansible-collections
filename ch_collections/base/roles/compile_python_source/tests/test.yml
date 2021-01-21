@@ -1,0 +1,35 @@
+---
+- name: Bring up docker containers
+  hosts: localhost
+  gather_facts: no
+  vars:
+    inventory:
+      - name: python
+        image: "centos:centos7"
+  roles:
+    - role: provision_docker
+      provision_docker_inventory: "{{ inventory }}"
+      provision_docker_privileged: true
+      provision_docker_use_docker_connection: true
+
+- name: Python Build and Test
+  hosts: python
+  become: true
+  gather_facts: no
+  roles:
+    - role: '../../compile_python_source'
+
+- name: Testing Python
+  hosts: python
+  become: true
+  gather_facts: yes
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python3.6
+  tasks:
+    - name: Test Python Version when using installed Interpreter
+      command: python3.6 -V
+      register: version
+    - name: Version of Python Interpreter being used
+      ansible.builtin.debug:
+        msg: "{{ version }}"
+      

@@ -1,0 +1,11 @@
+exclude_paths:
+  - $HOME/.ansible/roles/
+warn_list:
+  - '206'  # Variables should have spaces before and after: {{ var_name }}
+  - '208'  # File permissions unset or incorrect
+  - '504'  # Do not use 'local_action', use 'delegate_to: localhost'
+skip_list:
+  - '201'  # Trailing whitespace 
+  - '301'  # Commands should not change things if nothing needs doing
+  - '602'  # Don't compare to empty string
+  - '703'  # meta/main.yml default values should be changed

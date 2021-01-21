@@ -1,0 +1,16 @@
+- name: Ensure pre-requisites are present
+  package:
+    name: "python"
+    state: present
+
+- name: Copy Script
+  copy:
+    src: files/cw_log_conf.py
+    dest: "{{ script_dir if script_dir != '' else lookup('env', 'HOME') }}"
+    mode: 0555
+
+- name: Set rx file permissions
+  file:
+    path: "{{ script_dir if script_dir != '' else lookup('env', 'HOME') }}/cw_log_conf.py"
+    state: present
+    mode: 0555
