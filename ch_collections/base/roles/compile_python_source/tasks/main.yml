@@ -31,5 +31,14 @@
 - name: Create a symbolic link for pip{{ major_version }}
   ansible.builtin.file:
     src: "/usr/local/bin/pip{{ major_version }}"
-    dest: "/usr/bin/pip{{ major_version.split('.')[0]}}"
+    dest: "/usr/bin/pip{{ major_version.split('.')[0] }}"
     state: link
+
+- name: Clean up after installs
+  file:
+    state: absent
+    path: "{{ download_dest }}/{{ item }}"
+  loop: 
+    - "{{ unarchive_filename }}"
+    - "{{ archive_filename }}"
+    - "{{ pip_filename }}"

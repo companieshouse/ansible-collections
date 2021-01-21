@@ -1,0 +1,8 @@
+---
+- name: Fix CentOS Base Repo for RPM EOL
+  template:
+    src: CentOS-Base.repo.j2
+    dest: /etc/yum.repos.d/CentOS-Base.repo
+    mode: 0755
+  register: centos_base_repo_template
+  when: ansible_distribution == "CentOS"

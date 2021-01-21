@@ -6,6 +6,10 @@ warn_list:
   - '504'  # Do not use 'local_action', use 'delegate_to: localhost'
 skip_list:
   - '201'  # Trailing whitespace 
+  - '204'  # Lines should be no longer than 160 chars
   - '301'  # Commands should not change things if nothing needs doing
+  - '601'  # Don't compare to literal True/False
   - '602'  # Don't compare to empty string
   - '703'  # meta/main.yml default values should be changed
+  - '208'  # File permissions unset or incorrect
+  
