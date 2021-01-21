@@ -39,6 +39,6 @@
     state: absent
     path: "{{ download_dest }}/{{ item }}"
   loop: 
-    - "{{ version }}"
-    - "{{ version }}.tar.gz"
+    - "{{ unarchive_filename }}"
+    - "{{ archive_filename }}"
     - "{{ pip_filename }}"
