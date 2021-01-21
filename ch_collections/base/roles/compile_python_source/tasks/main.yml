@@ -33,3 +33,12 @@
     src: "/usr/local/bin/pip{{ major_version }}"
     dest: "/usr/bin/pip{{ major_version.split('.')[0] }}"
     state: link
+
+- name: Clean up after installs
+  file:
+    state: absent
+    path: "{{ download_dest }}/{{ item }}"
+  loop: 
+    - "{{ version }}"
+    - "{{ version }}.tar.gz"
+    - "{{ pip_filename }}"
