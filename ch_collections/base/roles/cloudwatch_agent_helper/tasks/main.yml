@@ -12,5 +12,5 @@
 - name: Set rx file permissions
   file:
     path: "{{ script_dir if script_dir != '' else lookup('env', 'HOME') }}/cw_log_conf.py"
-    state: present
+    state: file
     mode: 0555
