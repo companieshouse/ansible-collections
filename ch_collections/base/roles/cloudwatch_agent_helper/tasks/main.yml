@@ -6,6 +6,6 @@
 - name: Copy Script
   copy:
     src: files/cw_log_conf.py
-    dest: "{{ script_dir if script_dir != '' else ansible_env.HOME }}"
+    dest: "{{ (script_dir |length > 0) | ternary(script_dir, ansible_env.HOME) }}"
     mode: 0555
 
