@@ -1,0 +1,328 @@
+---
+# Preliminary tasks that should always be run
+# List users in order to look files inside each home directory
+- name: "PRELIM | List users accounts"
+  command: "awk -F: '{print $1}' /etc/passwd"
+  register: users
+  changed_when: no
+  check_mode: no
+
+- name: "PRELIM | Gather accounts with empty password fields"
+  shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'" # noqa 306
+  register: empty_password_accounts
+  changed_when: no
+  check_mode: no
+
+- name: "PRELIM | Gather UID 0 accounts other than root"
+  shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit i}'" # noqa 306
+  register: uid_zero_accounts_except_root
+  changed_when: no
+  check_mode: no
+
+- name: "PRELIM | Section 4.1 | Configure System Accounting (auditd)"
+  package:
+      name: audit
+      state: present
+
+- name: "PRELIM | Section 5.1 | Configure cron"
+  package:
+      name: cronie
+      state: present
+
+- name: "PRELIM | Check if prelink package is installed"
+  command: rpm -q prelink
+  register: prelink_installed
+  changed_when: no
+  failed_when: no
+  check_mode: no
+  args:
+    warn: false
+  tags:
+      - skip_ansible_lint
+
+- name: "PRELIM | Check if postfix package is installed"
+  command: rpm -q postfix
+  register: postfix_installed
+  changed_when: no
+  failed_when: no
+  check_mode: no
+  args:
+    warn: false
+  tags:
+      - skip_ansible_lint
+
+# Individual service checks
+- name: "PRELIM | Check for xinetd service"
+  shell: service xinetd status | cut -d \" \" -f 6
+  register: xinetd_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for ntpd service"
+  shell: service ntpd status | cut -d \" \" -f 6
+  register: ntpd_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for chronyd service"
+  shell: service chronyd status | cut -d \" \" -f 6
+  register: chronyd_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for avahi-daemon service"
+  shell: service avahi-daemon status | cut -d \" \" -f 6
+  register: avahi_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for cups service"
+  shell: service cups status | cut -d \" \" -f 6
+  register: cups_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for dhcpd service"
+  shell: service dhcpd status | cut -d \" \" -f 6
+  register: dhcpd_service_status
+  changed_when: no
+  check_mode: no
+  args:
+    warn: false
+  failed_when: no
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for slapd service"
+  shell: service slapd status | cut -d \" \" -f 6
+  register: slapd_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for nfs service"
+  shell: service nfs status | cut -d \" \" -f 6
+  register: nfs_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for rpcbind service"
+  shell: service rpcbind status | cut -d \" \" -f 6
+  register: rpcbind_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for named service"
+  shell: service snmpd named | cut -d \" \" -f 6
+  register: named_service_status
+  changed_when: no
+  check_mode: no
+  args:
+    warn: false
+  failed_when: no
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for vsftpd service"
+  shell: service vsftpd status | cut -d \" \" -f 6
+  register: vsftpd_service_status
+  changed_when: no
+  check_mode: no
+  args:
+    warn: false
+  failed_when: no
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for httpd service"
+  shell: service httpd status | cut -d \" \" -f 6
+  register: httpd_service_status
+  changed_when: no
+  check_mode: no
+  args:
+    warn: false
+  failed_when: no
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for dovecot service"
+  shell: service dovecot status | cut -d \" \" -f 6
+  register: dovecot_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for smb service"
+  shell: service smb status | cut -d \" \" -f 6
+  register: smb_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for squid service"
+  shell: service squid status | cut -d \" \" -f 6
+  register: squid_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for snmpd service"
+  shell: service snmpd status | cut -d \" \" -f 6
+  register: snmpd_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for ypserv service"
+  shell: service ypserv status | cut -d \" \" -f 6
+  register: ypserv_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for rsh.socket service"
+  shell: service rsh.socket status | cut -d \" \" -f 6
+  register: rsh_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for rlogin.socket service"
+  shell: service rlogin.socket status | cut -d \" \" -f 6
+  register: rlogin_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for rexec.socket service"
+  shell: service rexec.socket status | cut -d \" \" -f 6
+  register: rexec_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for telnet service"
+  shell: service telnet status | cut -d \" \" -f 6
+  register: telnet_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for tftp service"
+  shell: service tftp status | cut -d \" \" -f 6
+  register: tftp_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for rsyncd service"
+  shell: service rsyncd status | cut -d \" \" -f 6
+  register: rsyncd_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false 
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for ntalk service"
+  shell: service ntalk status | cut -d \" \" -f 6
+  register: ntalk_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint
+
+- name: "PRELIM | Check for autofs service"
+  shell: service autofs status | cut -d \" \" -f 6
+  register: autofs_service_status
+  changed_when: no
+  check_mode: no
+  failed_when: no
+  args:
+    warn: false
+  tags:
+    - skip_ansible_lint

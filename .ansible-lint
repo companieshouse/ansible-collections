@@ -11,5 +11,5 @@ skip_list:
   - '601'  # Don't compare to literal True/False
   - '602'  # Don't compare to empty string
   - '703'  # meta/main.yml default values should be changed
-
+  - '208'  # File permissions unset or incorrect
   

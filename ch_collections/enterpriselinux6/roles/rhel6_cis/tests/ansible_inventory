@@ -1,0 +1,5 @@
+[all]
+centos6 ansible_connection=docker
+
+[role_test]
+RHEL6-CIS

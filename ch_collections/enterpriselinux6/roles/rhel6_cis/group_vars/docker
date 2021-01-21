@@ -1,0 +1,30 @@
+---
+ansible_user: root
+# AIDE cron settings
+rhel6cis_aide_cron:
+  cron_user: root
+  cron_file: /var/spool/cron/root
+  aide_job: '/usr/sbin/aide --check'
+  aide_minute: 0
+  aide_hour: 5
+  aide_day: '*'
+  aide_month: '*'
+  aide_weekday: '*'
+
+rhel6cis_sshd:
+    clientalivecountmax: 3
+    clientaliveinterval: 300
+    ciphers: "aes256-ctr,aes192-ctr,aes128-ctr"
+    macs: "hmac-sha2-512,hmac-sha2-256"
+    logingracetime: 60
+    # - make sure you understand the precedence when working with these values!!
+    allowusers: vagrant
+    allowgroups: vagrant
+    denyusers: root
+    denygroups: root
+
+# Workarounds for Docker
+rhel6cis_skip_for_travis: true
+rhel6cis_selinux_disable: true
+rhel6cis_rule_1_4_3: false
+rhel6cis_rule_3_6_1: false
