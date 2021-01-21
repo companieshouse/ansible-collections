@@ -616,6 +616,7 @@
       - grub
       - patch
       - rule_1.4.2
+      - skip_ansible_lint
 
 - name: "SCORED | 1.4.2 | PATCH | Ensure bootloader password is set"
   lineinfile:
