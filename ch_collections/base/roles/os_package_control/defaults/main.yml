@@ -1,4 +1,6 @@
 ---
+update_os: true
+
 base_ami_dependencies:
   - openssl
   - openssh-server

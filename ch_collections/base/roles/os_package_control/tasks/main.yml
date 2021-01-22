@@ -3,6 +3,7 @@
   package:
     name: '*'
     state: latest
+  when: update_os
 
 - name: Install base dependencies
   package:
