@@ -1,0 +1,23 @@
+---
+- name: Update System Packages # noqa 403
+  package:
+    name: '*'
+    state: latest
+
+- name: Install base dependencies
+  package:
+    name: '{{ item }}'
+    state: present
+  loop: '{{ base_ami_dependencies }}'
+
+- name: Install additional dependencies supplied
+  package:
+    name: '{{ item }}'
+    state: present
+  loop: '{{ additional_packages }}'
+
+- name: Remove unnecessary packages in OS
+  package:
+    name: '{{ item }}'
+    state: absent
+  loop: '{{ remove_packages }}'
