@@ -92,6 +92,15 @@
     mode: "0640"
   notify: restart nrpe service
 
+- name: Download check service plugin to correct directory
+  get_url:
+    url: https://raw.githubusercontent.com/jonschipp/nagios-plugins/master/check_service.sh
+    dest: "{{ nrpe_plugins_dir }}/check_service.sh"
+    owner: "{{ nrpe_user }}"
+    group: "{{ nrpe_group }}"
+    mode: "0640"
+  notify: restart nrpe service
+
 - name: Ensure NRPE service is running
   service:
     name: "{{ nrpe_service }}"
