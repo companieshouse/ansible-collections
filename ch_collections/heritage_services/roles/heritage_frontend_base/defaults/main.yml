@@ -4,7 +4,7 @@ required_packages:
   - mod_ssl
   - mod_perl
 
-s3_bucket: development-eu-west-2.resources.ch.gov.uk
+s3_bucket: bucketname
 
 s3_files_oracle_basic_rpm: /packages/oracle/oracle-instantclient11.2-basic-11.2.0.2.0.x86_64.rpm
 s3_files_oracle_devel_rpm: /packages/oracle/oracle-instantclient11.2-devel-11.2.0.2.0.x86_64.rpm
