@@ -33,11 +33,11 @@ files_to_remove: 'oracle-instantclient*,*.tar.gz'
 
 user_home_path: /home/service_user
 
-s3_file_app_static: /application/service_user/frontend/service_user-frontend-static.tar.gz
-s3_files_app_static_name: '{{ s3_file_app_static | basename }}'
+s3_file_perl_lib: /application/service_user/frontend/service_user-frontend-static.tar.gz
+s3_file_perl_lib_name: '{{ s3_file_app_static | basename }}'
 
 tar_files:
-  - "{{ s3_files_app_static_name }}"
+  - "{{ s3_file_perl_lib_name }}"
 
 users:
   - name: service_user
