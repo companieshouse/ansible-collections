@@ -1,0 +1,45 @@
+---
+required_packages: 
+  - httpd
+  - mod_ssl
+  - mod_perl
+
+s3_bucket: bucketname
+
+s3_files_oracle_basic_rpm: /packages/oracle/oracle-instantclient11.2-basic-11.2.0.2.0.x86_64.rpm
+s3_files_oracle_devel_rpm: /packages/oracle/oracle-instantclient11.2-devel-11.2.0.2.0.x86_64.rpm
+s3_files_oracle_sqlplus_rpm: /packages/oracle/oracle-instantclient11.2-sqlplus-11.2.0.2.0.x86_64.rpm
+s3_files_oracle_basic_rpm_name: '{{ s3_files_oracle_basic_rpm | basename }}'
+s3_files_oracle_devel_rpm_name: '{{ s3_files_oracle_devel_rpm | basename }}'
+s3_files_oracle_sqlplus_rpm_name: '{{ s3_files_oracle_sqlplus_rpm | basename }}'
+
+env_var:
+   - export LD_LIBRARY_PATH=/usr/lib/oracle/11.2/client64/lib/
+   - export TNS_ADMIN=/usr/lib/oracle/11.2/client64/lib/
+
+ld_so_conf:
+    - /usr/lib/oracle/11.2/client64/lib/
+    - /usr/local/lib
+
+perl_binaries:
+  - /usr/local/lib64/perl5 
+  - /usr/local/share/perl5 
+  - /usr/lib64/perl5 
+  - /usr/share/perl5
+
+http_conf: /etc/httpd/conf/httpd.conf
+
+files_to_remove: 'oracle-instantclient*,*.tar.gz'
+
+user_home_path: /home/service_user
+
+s3_file_perl_lib: /application/service_user/frontend/service_user-frontend-static.tar.gz
+s3_file_perl_lib_name: '{{ s3_file_app_static | basename }}'
+
+tar_files:
+  - "{{ s3_file_perl_lib_name }}"
+
+users:
+  - name: service_user
+    name: chlservices
+    gid: 600

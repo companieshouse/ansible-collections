@@ -1,0 +1,159 @@
+---
+- name: Install dependencies
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items: '{{ required_packages }}'
+
+- name: Set SELinux to permissive
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: install boto and botocore
+  pip:
+    name: ['boto', 'boto3', 'botocore']
+    executable: /usr/local/bin/pip
+
+- name: Install j2cli templating tool
+  pip:
+    name: "j2cli"
+    executable: /usr/local/bin/pip
+  
+- name: Create user groups
+  group:
+    name: '{{ item.group }}'
+    gid: '{{ item.gid }}'
+    state: present
+  with_items: '{{ users }}'
+
+- name: Create users
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.group }}"
+    state: present
+  loop: "{{ users }}"
+
+  ######################### Oracle #########################
+# Download and install Oracle client packages
+# Can only download one s3 object at a time
+- name: Download Oracle setup files from s3 - basic rpm
+  aws_s3:
+    bucket: '{{ s3_bucket }}'
+    object: '{{ s3_files_oracle_basic_rpm }}'
+    dest: "/tmp/{{ s3_files_oracle_basic_rpm_name }}"
+    mode: get
+
+- name: Download Oracle setup files from s3 - devel rpm
+  aws_s3:
+    bucket: '{{ s3_bucket }}'
+    object: '{{ s3_files_oracle_devel_rpm }}'
+    dest: "/tmp/{{ s3_files_oracle_devel_rpm_name }}"
+    mode: get
+
+- name: Download Oracle setup files from s3 - sqlplus rpm
+  aws_s3:
+    bucket: '{{ s3_bucket }}'
+    object: '{{ s3_files_oracle_sqlplus_rpm }}'
+    dest: "/tmp/{{ s3_files_oracle_sqlplus_rpm_name }}"
+    mode: get
+
+# Can only install one at a time
+- name: Install Oracle packages - basic
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
+  yum:
+     name: "/tmp/{{ s3_files_oracle_basic_rpm_name }}"
+     state: present
+
+- name: Install Oracle packages - devel
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
+  yum:
+     name: "/tmp/{{ s3_files_oracle_devel_rpm_name }}"
+     state: present
+
+- name: Install Oracle packages - sqlplus
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
+  yum:
+     name: "/tmp/{{ s3_files_oracle_sqlplus_rpm_name }}"
+     state: present
+
+# Configure the Oracle client setup for the app user
+- name: Ensure oracle env variables are set in app user home path
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
+  lineinfile:
+    path: "{{ user_home_path }}/.bash_profile"
+    line: '{{ item }}'
+  with_items: '{{ env_var }}'
+
+- name: Add config to ld.so.conf
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
+  lineinfile:
+    path: /etc/ld.so.conf
+    line: '{{ item }}'
+  with_items: '{{ ld_so_conf }}'
+
+# Copy jinja template over to be populated at build time
+- name: Copy TNS Names template to correct location
+  copy:
+    src: usr/lib/oracle/11.2/client64/lib/tnsnames.j2
+    dest: /usr/lib/oracle/11.2/client64/lib/tnsnames.j2
+
+######################### Oracle #########################
+
+# TODO: fix this so its idempotent
+- name: Run ldconfig
+  command: /sbin/ldconfig
+
+- name: Download app library archive from s3
+  aws_s3:
+    bucket: '{{ s3_bucket }}'
+    object: '{{ s3_file_perl_lib }}'
+    dest: "/tmp/{{ s3_file_perl_lib_name }}"
+    mode: get
+
+- name: Unarchive app library download
+  unarchive:
+    remote_src: yes
+    src: "/tmp/{{ s3_file_perl_lib_name }}"
+    dest: /tmp/
+
+- name: Remove any exisitng Perl binaries
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: '{{ perl_binaries }}'
+
+- name: Install Perl binaries
+  copy:
+    src: "/tmp/{{ item }}/"
+    dest: "/{{ item }}"
+    remote_src: yes
+  with_items: '{{ perl_binaries }}'
+
+- name: Delete installation files
+  find:
+    paths: /tmp
+    patterns: '{{ files_to_remove }}'  
+  register: files_to_delete
+
+- name: Remove installation files
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ files_to_delete.files }}"
+
+- name: Remove any exisitng httpd.conf
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: '{{ http_conf }}'
+
