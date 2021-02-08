@@ -13,7 +13,7 @@
   ansible.posix.selinux:
     policy: "{{ item.policy | default(omit)}}"
     state: "{{ item.state }}"
-    with_items: "{{ selinux_status }}"
+  with_items: "{{ selinux_status }}"
 
 - name: install boto and botocore
   pip:
