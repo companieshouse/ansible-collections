@@ -104,6 +104,8 @@
 
 # Copy jinja template over to be populated at build time
 - name: Copy TNS Names template to correct location
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
   copy:
     src: usr/lib/oracle/11.2/client64/lib/tnsnames.j2
     dest: /usr/lib/oracle/11.2/client64/lib/tnsnames.j2
@@ -134,6 +136,8 @@
   with_items: '{{ perl_binaries }}'
 
 - name: Install Perl binaries
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
   copy:
     src: "/tmp/{{ item }}/"
     dest: "/{{ item }}"
