@@ -10,10 +10,10 @@
 - name: Set SELinux to permissive
   vars:
     ansible_python_interpreter: /usr/bin/python2.6
-  selinux:
+  ansible.posix.selinux:
     policy: "{{ item.policy | default(omit)}}"
     state: "{{ item.state }}"
-  loop: selinux_status
+  with_items: "{{ selinux_status }}"
 
 - name: install boto and botocore
   pip:
