@@ -1,4 +1,8 @@
 ---
+selinux_status:
+  - policy: targeted
+    state: permissive
+
 required_packages: 
   - httpd
   - mod_ssl
@@ -41,5 +45,5 @@ tar_files:
 
 users:
   - name: service_user
-    name: chlservices
+    group: chlservices
     gid: 600

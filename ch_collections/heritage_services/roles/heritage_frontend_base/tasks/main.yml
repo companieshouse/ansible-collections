@@ -11,8 +11,9 @@
   vars:
     ansible_python_interpreter: /usr/bin/python2.6
   selinux:
-    policy: targeted
-    state: permissive
+    policy: "{{ item.policy | default(omit)}}"
+    state: "{{ item.state }}"
+  loop: selinux_status
 
 - name: install boto and botocore
   pip:
