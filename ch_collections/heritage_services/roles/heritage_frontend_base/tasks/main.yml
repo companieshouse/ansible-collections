@@ -13,7 +13,8 @@
   selinux:
     policy: "{{ item.policy | default(omit)}}"
     state: "{{ item.state }}"
-  loop: selinux_status
+  loop: 
+    - "{{ selinux_status }}"
 
 - name: install boto and botocore
   pip:
