@@ -18,13 +18,8 @@
 - name: install boto and botocore
   pip:
     name: ['boto', 'boto3', 'botocore']
-    executable: /usr/local/bin/pip
+    umask: "0022"
 
-- name: Install j2cli templating tool
-  pip:
-    name: "j2cli"
-    executable: /usr/local/bin/pip
-  
 - name: Create user groups
   group:
     name: '{{ item.group }}'
