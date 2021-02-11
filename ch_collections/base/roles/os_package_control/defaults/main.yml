@@ -8,3 +8,4 @@ base_ami_dependencies:
 additional_packages: []
 remove_packages: []
 additional_packages_pip: []
+pip_executable: ""
