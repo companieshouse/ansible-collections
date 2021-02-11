@@ -20,7 +20,8 @@
 - name: Install additional dependencies supplied (pip)
   pip: 
     name: '{{ item.name }}'
-    umask: "{{ item.umask | default(omit) }}"
+    umask: '{{ item.umask | default(omit) }}'
+    executable: '{{ pip_executable | default(omit) }}'
   loop: '{{ additional_packages_pip }}'
 
 - name: Remove unnecessary packages in OS
