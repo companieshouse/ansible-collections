@@ -19,7 +19,6 @@
   pip:
     name: ['boto', 'boto3', 'botocore']
     umask: "0022"
-    executable: /usr/local/bin/pip
 
 - name: Create user groups
   group:
