@@ -42,3 +42,13 @@
     - "{{ unarchive_filename }}"
     - "{{ archive_filename }}"
     - "{{ pip_filename }}"
+
+- name: Setup Path for Pip installed executables
+  blockinfile:
+    path: "/etc/profile.d/pip.sh"
+    create: yes
+    state: present
+    owner: root
+    group: root
+    mode: 0644
+    block: "{{ pip_paths }}"

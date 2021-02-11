@@ -16,3 +16,5 @@ unarchive_filename: "{{ archive_filename | splitext | first }}"
 
 pip_url: "https://bootstrap.pypa.io/get-pip.py"
 pip_filename: "{{ pip_url | basename }}"
+pip_paths: |
+  pathmunge /usr/local/bin
