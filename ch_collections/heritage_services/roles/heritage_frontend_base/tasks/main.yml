@@ -21,12 +21,6 @@
     umask: "0022"
     executable: /usr/local/bin/pip
 
-- name: Install j2cli templating tool
-  pip:
-    name: "j2cli"
-    umask: "0022"
-    executable: /usr/local/bin/pip
-  
 - name: Create user groups
   group:
     name: '{{ item.group }}'
