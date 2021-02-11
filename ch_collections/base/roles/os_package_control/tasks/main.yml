@@ -17,6 +17,11 @@
     state: present
   loop: '{{ additional_packages }}'
 
+- name: Install additional dependencies supplied (pip)
+  pip: 
+    name: '{{ item }}'
+  loop: '{{ additional_packages_pip }}'
+
 - name: Remove unnecessary packages in OS
   package:
     name: '{{ item }}'
