@@ -7,7 +7,8 @@ dependencies_packages:
   - bzip2-devel
 
 version: "3.6.6"
-major_version: "{{ version.split('.')[0] }}.{{ version.split('.')[1] }}"
+major_version: "{{ version.split('.')[0] }}"
+minor_version: "{{ version.split('.')[0] }}.{{ version.split('.')[1] }}"
 python_version_url: "https://www.python.org/ftp/python/{{ version }}/Python-{{ version }}.tgz"
 
 download_dest: "/tmp"
