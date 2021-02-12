@@ -1,10 +1,10 @@
-{% for server in servers %}{{ server.name }} = 
+{% for db in tnsnames %}{{ db.name }} = 
   (DESCRIPTION =
     (ADDRESS_LIST =
-      (ADDRESS = (PROTOCOL = TCP)(HOST = {{ server.address }})(PORT = {{ server.port }}))
+      (ADDRESS = (PROTOCOL = TCP)(HOST = {{ db.address }})(PORT = {{ db.port }}))
     )
     (CONNECT_DATA =
-      (SERVICE_NAME = {{ server.service_name }})
+      (SERVICE_NAME = {{ db.service_name }})
       (SERVER = DEDICATED)
     )
   )
