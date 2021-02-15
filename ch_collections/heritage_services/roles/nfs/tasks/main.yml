@@ -1,6 +1,6 @@
 ---
 #ADD host OS vars for Master Config based on centos6/7
-- name: Include distribution and version-specific vars.
+- name: Include distribution and version-specific vars
   include_vars: "{{ item }}"
   with_first_found:
     - files:
@@ -8,6 +8,8 @@
       skip: true
 
 - name: Install Packages
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.6
   ansible.builtin.package: 
     name: "{{ item }}"
     state: present
