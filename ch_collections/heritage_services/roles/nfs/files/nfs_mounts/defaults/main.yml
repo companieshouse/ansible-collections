@@ -1,0 +1,8 @@
+---
+mounts_timeout: 0
+mounts_parent_dir: "/mounts"
+default_mount_options: [
+  "rw",
+  "hard",
+  "nointr"
+]

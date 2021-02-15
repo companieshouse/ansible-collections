@@ -1,0 +1,12 @@
+---
+nfs_packages:
+  - autofs
+  - nfs-utils
+auto_master_file: "/etc/ansible.autofsmaster"
+
+service_manager: "sysvinit"
+service_file_directory: "/etc/rc.d/init.d"
+service_file_suffix: ""
+service_file_mode: "0755"
+
+service_pidfile: "/var/run/{{ service_name }}.pid"
