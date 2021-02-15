@@ -1,0 +1,46 @@
+#!/bin/bash
+# chkconfig: 345 29 71
+# processname: {{ service_executable }}
+# config: /etc/auto.master
+# description: Uses Autofs config to monitor expected NFS mount status
+#
+### BEGIN INIT INFO
+# Provides: {{ service_name }}
+# Required-Start: $network ypbind autofs
+# Required-Stop: $network ypbind autofs
+# Default-Start: 3 4 5
+# Default-Stop: 0 1 2 6
+# Short-Description: Uses Autofs config to monitor expected NFS mount status
+# Description: Uses Autofs config to monitor expected NFS mount status
+### END INIT INFO
+
+
+case "$1" in 
+start)
+    echo "Starting {{ service_name }} service..."
+    nohup {{ service_executable }} > /dev/null &
+    echo $!> "{{ service_pidfile }}"
+    ;;
+stop)
+    echo "Stopping {{ service_name }} service..."
+    kill $(cat "{{ service_pidfile }}")
+    rm "{{ service_pidfile }}"
+    echo "Service stopped"
+    ;;
+restart)
+    $0 stop
+    $0 start
+    ;;
+status)
+    if [ -e "{{ service_pidfile }}" ]; then
+       echo {{ service_name }} is running, pid=$(cat "{{ service_pidfile }}")
+    else
+       echo {{ service_name }} is stopped
+     exit 1
+    fi
+    ;;
+*)
+    echo "Usage: $0 {start|stop|status|restart}"
+esac
+
+exit 0

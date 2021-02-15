@@ -1,0 +1,36 @@
+#!/bin/bash
+
+mountdir=$(cat {{ auto_master_file }} | awk '{print $1}')
+mountconf=$(cat {{ auto_master_file }}  | awk '{print $2}')
+loop_time={{ nfs_watcher_wait_time }}
+list_timeout={{ nfs_watcher_list_timeout }}
+
+function check_mounts {
+  while IFS= read -r line; do
+    mount=$(echo "$line" | awk '{print $1}')
+    #For each mount, check if we can list its mountpoint directory. If it exists and is of type 'nfs' continue. Else error and mark as unhealthy.
+    if timeout --signal=KILL $list_timeout ls -d "${mountdir}/${mount}/" >/dev/null 2>&1 ; then
+      # Can access mount point within timeout, checking it is NFS... 
+      if [ $( df -P -T "${mountdir}/${mount}" | tail -n +2 | awk '{print $2}' | grep -q 'nfs' ; echo $? ) -ne 0 ] ; then
+        echo "Mount point "${mountdir}/${mount}" is accessable , but is not NFS."
+        mark_as_unhealthy
+      fi
+    else  
+      echo "Timeout/Error on accessing mount for ${mountdir}/${mount}" 
+      mark_as_unhealthy
+    fi
+  done < "${mountconf}"
+}
+
+function mark_as_unhealthy {
+  echo "Getting instance ID from metadata URL" 
+  instance_id=$(curl -s http://169.254.169.254/2020-10-27/meta-data/instance-id)
+  region=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
+  echo "Changing AWS Instance health to Unhealthy..." 
+  aws autoscaling set-instance-health --region=${region} --instance-id ${instance_id} --health-status Unhealthy --should-respect-grace-period
+}
+
+while true; do
+  check_mounts
+  sleep $loop_time
+done
