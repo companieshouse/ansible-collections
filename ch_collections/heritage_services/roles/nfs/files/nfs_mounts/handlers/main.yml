@@ -1,5 +1,17 @@
 ---
   - name: Restart autofs
     service:
+      name: nfs-watcher
+      state: stopped
+    notify: Restart autofs (2)
+
+  - name: Restart autofs (2)
+    service:
       name: autofs
-      state: restart
+      state: restarted
+    notify: Restart autofs (3)
+
+  - name: Restart autofs (3)
+    service:
+      name: nfs-watcher
+      state: started
