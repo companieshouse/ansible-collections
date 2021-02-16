@@ -52,6 +52,6 @@
     ansible_python_interpreter: /usr/bin/python2.6  
   copy:
     src: nfs_mounts
-    dest: "{{ mounts_role_dir }}/roles/nfs_mounts"
+    dest: "{{ mounts_role_dir }}/roles/"
     mode: 0644
     directory_mode: 0755
