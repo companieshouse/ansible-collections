@@ -1,0 +1,28 @@
+{
+  "agent": {
+   "metrics_collection_interval": {{ metrics_collection_interval }},
+   "region": "{{ region }}",
+   "logfile": "{{ cloudwatch_agent_log_file }}",
+   "debug": false,
+   "run_as_user": "cwagent"
+  }
+  {% if cw_log_files is defined -%}
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {%+ for logname, logdata in cw_log_files.items() -%}
+          {
+              "file_path": "{{ logdata.file_path | default(default_log_path) }}/{{ logname }}",
+              "log_group_name": "{{ logdata.log_group_name  default(default_log_group_name) }}",
+              "log_stream_name": "{instance_id}_{hostname}",
+              "timezone": "Local"
+          }{%+ if not loop.last -%},{%+ endif -%}
+          {%+ endfor -%}
+        ]
+      }
+    },
+    "log_stream_name": "{instance_id}_{hostname}"
+  }
+{% endif -%}
+}
