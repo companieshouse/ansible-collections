@@ -4,10 +4,10 @@
    "region": "{{ region }}",
    "logfile": "{{ cloudwatch_agent_log_file }}",
    "debug": false,
-   "run_as_user": "cwagent"
+   "run_as_user": "{{ cw_agent_user }}"
   },
+  {% if cw_log_files is defined -%}
   "logs": {
-    {% if cw_log_files is defined -%}
     "logs_collected": {
       "files": {
         "collect_list": [
@@ -23,6 +23,6 @@
       }
     },
     "log_stream_name": "{instance_id}_{hostname}"
-    {% endif -%}
   }
+  {% endif -%}
 }

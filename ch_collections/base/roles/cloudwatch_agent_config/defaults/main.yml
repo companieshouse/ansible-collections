@@ -1,5 +1,6 @@
 cwa_agent_ctl: "/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl"
 cwa_agent_config_file: "cloudwatch-config.json"
+cw_agent_user: "cwagent"
 
 metrics_collection_interval: 60
 
