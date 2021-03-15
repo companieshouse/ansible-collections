@@ -20,6 +20,8 @@ s3_files_oracle_sqlplus_rpm_name: '{{ s3_files_oracle_sqlplus_rpm | basename }}'
 env_var:
    - export LD_LIBRARY_PATH=/usr/lib/oracle/11.2/client64/lib/
    - export TNS_ADMIN=/usr/lib/oracle/11.2/client64/lib/
+   - export LANG='en_US.UTF-8'
+   - export LC_ALL='en_US.UTF-8'
 
 ld_so_conf:
     - /usr/lib/oracle/11.2/client64/lib/
