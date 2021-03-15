@@ -80,15 +80,15 @@
      name: "/tmp/{{ s3_files_oracle_sqlplus_rpm_name }}"
      state: present
 
-# Configure the Oracle client setup for the app user
-- name: Ensure oracle env variables are set in app user home path
+# Configure the bash profile for the user
+- name: Ensure env variables are set in app user home path
   vars:
     ansible_python_interpreter: /usr/bin/python2.6
   lineinfile:
     path: "{{ user_home_path }}/.bash_profile"
     line: '{{ item }}'
   with_items: '{{ env_var }}'
-
+# Configure oracle ld config
 - name: Add config to ld.so.conf
   vars:
     ansible_python_interpreter: /usr/bin/python2.6
