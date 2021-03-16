@@ -3,4 +3,4 @@
     src: templates/cloudwatch-config.json.j2
     dest: "{{ cwa_agent_config_file }}"
   notify: Reload CloudWatch Agent
-  when: cw_log_files is defined
+  when: cw_log_files | length > 0
