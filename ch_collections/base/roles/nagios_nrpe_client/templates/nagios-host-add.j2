@@ -3,7 +3,7 @@
 HOSTNAME=`hostname -s`;
 IP_ADDRESS=`hostname -I | awk '{print $1}'`;
 NAGIOS_HOST="{{ nagios_host }}";
-API_KEY="{{API_KEY | default("")}}";
+API_KEY="{{ nagios_api_key | default("")}}";
 TEMPLATE="EWF_Server";
 
 curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/host?apikey=$API_KEY&pretty=1" -d "host_name=$HOSTNAME&address=$IP_ADDRESS&use=$TEMPLATE&force=1&applyconfig=1";
