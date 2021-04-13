@@ -1,0 +1,26 @@
+#!/bin/sh
+# chkconfig: 2345 90 20
+
+LOCKFILE=/var/lock/subsys/nagios-init;
+
+start(){
+    # Touch our lock file so that stopping will work correctly
+    touch ${LOCKFILE};
+    /usr/local/bin/nagios-host-add.sh;
+}
+
+stop(){
+# Remove our lock file
+    rm -f ${LOCKFILE};
+# Run that command that we wanted to run
+    /usr/local/bin/nagios-host-remove.sh;
+}
+
+case "$1" in
+    start) start;;
+    stop) stop;;
+    *)
+        echo $"Usage: $0 {start|stop}"
+        exit 1
+esac
+exit 0
