@@ -1,0 +1,26 @@
+#!/bin/bash
+
+HOSTNAME=`hostname -s`;
+IP_ADDRESS=`hostname -I | awk '{print $1}'`;
+NAGIOS_HOST="{{ nagios_host }}";
+API_KEY="{{ nagios_api_key | default("")}}";
+TEMPLATE="EWF_Server";
+
+curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/host?apikey=$API_KEY&pretty=1" -d "host_name=$HOSTNAME&address=$IP_ADDRESS&use=$TEMPLATE&force=1&applyconfig=1";
+sleep 1;
+curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/service?apikey=$API_KEY&pretty=1" -d "host_name=$HOSTNAME&service_description=Ping&use=xiwizard_linuxserver_ping_service&force=1&applyconfig=1";
+sleep 1;
+curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/service?apikey=$API_KEY&pretty=1" -d "host_name=$HOSTNAME&service_description=Check Load&use=check_load&force=1&applyconfig=1";
+sleep 1;
+curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/service?apikey=$API_KEY&pretty=1" -d "host_name=$HOSTNAME&service_description=Check Disk&use=check_disk_space&force=1&applyconfig=1";
+sleep 1;
+curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/service?apikey=$API_KEY&pretty=1" -d "host_name=$HOSTNAME&service_description=SSH&use=check_sshd&force=1&applyconfig=1";
+sleep 1;
+curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/service?apikey=$API_KEY&pretty=1" -d "host_name=$HOSTNAME&service_description=HTTPD&use=check_httpd&force=1&applyconfig=1";
+sleep 1;
+curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/service?apikey=$API_KEY&pretty=1" -d "host_name=$HOSTNAME&service_description=Crond&use=check_crond&force=1&applyconfig=1";
+sleep 1;
+curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/service?apikey=$API_KEY&pretty=1" -d "host_name=$HOSTNAME&service_description=Syslogd&use=check_syslogd&force=1&applyconfig=1";
+sleep 1;
+curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/service?apikey=$API_KEY&pretty=1" -d "host_name=$HOSTNAME&service_description=Users&use=check_users&force=1&applyconfig=1";
+sleep 1;
