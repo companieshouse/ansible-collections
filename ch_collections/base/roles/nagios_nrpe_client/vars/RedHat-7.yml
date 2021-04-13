@@ -7,3 +7,7 @@ nrpe_packages:
   - nrpe
 nrpe_plugin_packages:
   - nagios-plugins-all
+
+# registration script
+services_location: /etc/systemd/system/
+nagios_registration_service: nagios-init

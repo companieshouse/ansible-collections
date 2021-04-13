@@ -3,3 +3,8 @@
   service:
     name: "{{ nrpe_service }}"
     state: restarted
+
+- name: enable-script
+  ansible.builtin.service:
+    name: "{{ nagios_registration_service }}"
+    enabled: yes

@@ -92,14 +92,34 @@
     mode: "0640"
   notify: restart nrpe service
 
-- name: Download check service plugin to correct directory
-  get_url:
-    url: https://raw.githubusercontent.com/jonschipp/nagios-plugins/master/check_service.sh
+- name: Copy check service script to host
+  copy:
+    src: check_service.sh
     dest: "{{ nrpe_plugins_dir }}/check_service.sh"
     owner: "{{ nrpe_user }}"
     group: "{{ nrpe_group }}"
-    mode: "0640"
+    mode: "750"
   notify: restart nrpe service
+
+- name: Copy registration service file to host
+  copy:
+    src: "{{ nagios_registration_service }}"
+    dest: "{{ services_location }}/{{ nagios_registration_service }}"
+    owner: "root"
+    group: "root"
+    mode: "755"
+  notify: enable-script
+
+- name: Create add/remove host scripts
+  template:
+    src: "{{ item }}.j2"
+    dest: "/usr/local/bin/{{ item }}.sh"
+    owner: "root"
+    group: "root"
+    mode: "755"
+  with_items:
+    - nagios-host-add
+    - nagios-host-remove
 
 - name: Ensure NRPE service is running
   service:

@@ -1,4 +1,4 @@
----
+---  
 nrpe_service: nrpe
 nrpe_dir: /etc/nagios
 nrpe_conf_dir: /etc/nrpe.d
@@ -7,3 +7,7 @@ nrpe_packages:
   - nrpe
 nrpe_plugin_packages:
   - nagios-plugins-all
+
+# registration script
+services_location: /etc/init.d/
+nagios_registration_service: nagios-init
