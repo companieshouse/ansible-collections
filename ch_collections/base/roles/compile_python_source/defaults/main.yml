@@ -15,7 +15,6 @@ download_dest: "/tmp"
 archive_filename: "{{ python_version_url | basename }}"
 unarchive_filename: "{{ archive_filename | splitext | first }}"
 
-pip_url: "https://bootstrap.pypa.io/get-pip.py"
-pip_filename: "{{ pip_url | basename }}"
+pip_filename: "get-pip.py"
 pip_paths: |
   pathmunge /usr/local/bin
