@@ -33,7 +33,7 @@
 #Install Pip
 - name: Download PIP install script
   vars:
-    ansible_python_interpreter: "{{ item }}/python{{ major_version }}"
+    ansible_python_interpreter: "/usr/bin/python{{ major_version }}"
   get_url:
     url: "{{ pip_url }}"
     dest: "{{ download_dest }}/"
