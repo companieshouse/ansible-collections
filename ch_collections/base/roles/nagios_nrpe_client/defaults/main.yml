@@ -1,5 +1,6 @@
 ---
 nagios_host: localhost
+server_template_name: "linux-server"
 nrpe_allowed_hosts:
   - 127.0.0.1
 nrpe_user: nrpe
@@ -10,3 +11,12 @@ nrpe_config:
   nrpe_group: "{{ nrpe_group }}"
   nrpe_port: 5666
   nrpe_dont_blame_nrpe: 0
+
+nrpe_command:
+  check_disk_all:
+    script: check_disk
+    option: -w 80 -c 90
+    
+sudo_commands:
+  - "{{ nrpe_plugins_dir }}/check_init_service"
+  - "{{ nrpe_plugins_dir }}/check_service.sh"
