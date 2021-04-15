@@ -16,6 +16,14 @@
     name: "{{ nrpe_user }}"
     groups: "{{ nrpe_group }}"
     state: present
+       
+- name: Create sudo with commands
+  template:
+    src: "sudoers_nrpe.j2"
+    dest: "/etc/sudoers.d/nrpe"
+    owner: "root"
+    group: "root"
+    mode: "0400"
 
 - name: Install NRPE service
   package:
