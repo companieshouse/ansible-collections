@@ -1,0 +1,4 @@
+{% if sudo_commands is defined %}
+# NRPE
+nrpe ALL=(ALL) NOPASSWD:{% for command in sudo_commands %}{{ command }}{%+ if not loop.last -%},{%+ endif -%}{% endfor %}
+{% endif %}
