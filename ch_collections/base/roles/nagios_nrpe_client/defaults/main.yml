@@ -16,7 +16,11 @@ nrpe_command:
   check_disk_all:
     script: check_disk
     option: -w 80 -c 90
-    
+  check_load:
+    sudo: true
+    script: check_load
+    option: -w 15,10,5 -c 30,20,10
+     
 sudo_commands:
   - "{{ nrpe_plugins_dir }}/check_init_service"
   - "{{ nrpe_plugins_dir }}/check_service.sh"
