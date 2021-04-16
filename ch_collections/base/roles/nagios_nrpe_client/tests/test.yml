@@ -86,5 +86,9 @@
           check_disk_all:
             script: check_disk
             option: -w 80 -c 90
+          check_load:
+            sudo: true
+            script: check_load
+            option: -w 15,10,5 -c 30,20,10
         nrpe_config: 
           dont_blame_nrpe: 0
