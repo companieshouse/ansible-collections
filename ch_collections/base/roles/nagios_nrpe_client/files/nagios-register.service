@@ -1,0 +1,15 @@
+[Unit]
+Description=Script that registers clients to Nagios on boot and de-registers on shutdown
+DefaultDependencies=no
+Before=shutdown.target reboot.target halt.target kexec.target
+After=network.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/nagios-host-add.sh
+ExecStop=/usr/local/bin/nagios-host-remove.sh
+
+[Install]
+WantedBy=multi-user.target halt.target reboot.target shutdown.target kexec.target
