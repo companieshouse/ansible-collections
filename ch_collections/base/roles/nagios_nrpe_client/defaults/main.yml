@@ -13,6 +13,7 @@ nrpe_config:
   nrpe_dont_blame_nrpe: 0
 
 nrpe_plugin_packages:
+  - nagios-plugins
   - nagios-plugins-nrpe
   - nagios-plugins-load
   - nagios-plugins-procs
