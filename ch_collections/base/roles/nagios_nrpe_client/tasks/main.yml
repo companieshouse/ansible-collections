@@ -102,12 +102,13 @@
   
 - name: Copy registration service file to host
   copy:
-    src: "{{ nagios_registration_service }}"
-    dest: "{{ services_location }}/{{ nagios_registration_service }}"
+    src: "{{ item }}"
+    dest: "{{ services_location }}/{{ item }}"
     owner: "root"
     group: "root"
     mode: "755"
-  notify: enable-script
+  loop: "{{ nagios_registration_services }}"
+  notify: enable-scripts
 
 - name: Create add/remove host scripts
   template:
