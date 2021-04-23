@@ -1,0 +1,14 @@
+[Unit]
+Description=Script that removes clients from Nagios on shutdown
+DefaultDependencies=no
+Before=shutdown.target reboot.target halt.target
+After=network.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/nagios-host-remove.sh
+
+[Install]
+WantedBy=shutdown.target halt.target 

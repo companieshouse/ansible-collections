@@ -4,7 +4,8 @@
     name: "{{ nrpe_service }}"
     state: restarted
 
-- name: enable-script
+- name: enable-scripts
   ansible.builtin.service:
-    name: "{{ nagios_registration_service }}"
+    name: "{{ item }}"
     enabled: yes
+  loop: "{{ nagios_registration_services }}"
