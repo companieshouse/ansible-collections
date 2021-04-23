@@ -99,16 +99,7 @@
     group: "{{ nrpe_group }}"
     mode: "0640"
   notify: restart nrpe service
-
-- name: Copy check service script to host
-  copy:
-    src: check_service.sh
-    dest: "{{ nrpe_plugins_dir }}/check_service.sh"
-    owner: "{{ nrpe_user }}"
-    group: "{{ nrpe_group }}"
-    mode: "750"
-  notify: restart nrpe service
-
+  
 - name: Copy registration service file to host
   copy:
     src: "{{ nagios_registration_service }}"
@@ -120,14 +111,21 @@
 
 - name: Create add/remove host scripts
   template:
-    src: "{{ item }}.j2"
-    dest: "/usr/local/bin/{{ item }}.sh"
+    src: "{{ item.file }}.j2"
+    dest: "{{ item.dest }}/{{ item.file }}.sh"
     owner: "root"
     group: "root"
-    mode: "755"
+    mode: "{{ item.mode }}"
   with_items:
-    - nagios-host-add
-    - nagios-host-remove
+    - file: check_service
+      dest: "{{ nrpe_plugins_dir }}"
+      mode: "750"
+    - file: nagios-host-add
+      dest: /usr/local/bin
+      mode: "755"
+    - file: nagios-host-remove
+      dest: /usr/local/bin
+      mode: "755"
 
 - name: Ensure NRPE service is running
   service:
