@@ -11,3 +11,4 @@ nrpe_plugin_packages:
 # registration script
 services_location: /etc/init.d/
 nagios_registration_service: nagios-init
+check_service_trusted_exit_code: 0
