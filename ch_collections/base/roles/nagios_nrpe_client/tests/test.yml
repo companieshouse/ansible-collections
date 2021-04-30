@@ -65,7 +65,9 @@
   roles:
     - epel
     - role: "../../nagios_nrpe_client"
-      vars: 
+      vars:
+        nagios_host: localhost
+        server_template_name: "linux-server" 
         nrpe_server_allowed_hosts:
           - 127.0.0.1
           - 10.0.0.0/8
