@@ -3,11 +3,19 @@
 # clamav_packages: []
 # clamav_daemon_config_path: ''
 
+clamav_mirror: database.clamav.net
+
 clamav_daemon_configuration_changes:
   - regexp: '^.*Example$'
     state: absent
   - regexp: '^.*LocalSocket .*$'
     line: 'LocalSocket {{ clamav_daemon_localsocket }}'
+
+clamav_freshclam_configuration_changes:
+  - regexp: '^#DNSDatabaseInfo .*$'
+    line: 'DNSDatabaseInfo current.cvd.clamav.net'
+  - regexp: '^.*DatabaseMirror .*$'
+    line: 'DatabaseMirror {{ clamav_mirror }}'
 
 # clamav_daemon: 'clamav-daemon'
 clamav_daemon_state: started
