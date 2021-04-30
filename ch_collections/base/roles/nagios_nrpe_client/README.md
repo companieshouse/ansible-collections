@@ -16,6 +16,11 @@ Role Variables
 Most usages of this role will require the following variables:
 
 ```
+#Configure self-registration settings so the instance can automatically register with Nagios
+auto_register_client: true
+nagios_host: nagios.db.hostname
+server_template_name: "linux-server"
+
 #Configure the hosts that are allowed to connect to the nrpre daemon. Hosts or CIDRs are supported
 nrpe_server_allowed_hosts:
   - 127.0.0.1

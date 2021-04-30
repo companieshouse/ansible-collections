@@ -1,4 +1,11 @@
 ---
+# Set `auto_register_client` to true if you want to add service scripts to host so it can
+# self-register with Nagios and de-register on shutdown.
+# Registration scripts for manual registration will automatically be added: 
+#   - /usr/local/bin/nagios-host-add 
+#   - /usr/local/bin/nagios-host-remove
+auto_register_client: false
+
 nagios_host: localhost
 server_template_name: "linux-server"
 nrpe_allowed_hosts:

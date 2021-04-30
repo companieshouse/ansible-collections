@@ -108,6 +108,7 @@
     group: "root"
     mode: "755"
   loop: "{{ nagios_registration_services }}"
+  when: auto_register_client
   notify: enable-scripts
 
 - name: Create add/remove host scripts
