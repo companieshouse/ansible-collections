@@ -6,6 +6,9 @@
 #   - /usr/local/bin/nagios-host-remove
 auto_register_client: false
 
+# RHEL/CentOS > 6 only
+auto_deregister_client: false
+
 nagios_host: localhost
 server_template_name: "linux-server"
 nrpe_allowed_hosts:

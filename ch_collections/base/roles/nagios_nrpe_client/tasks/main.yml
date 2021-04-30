@@ -111,6 +111,17 @@
   when: auto_register_client
   notify: enable-scripts
 
+- name: Copy registration service file to host
+  copy:
+    src: "{{ item }}"
+    dest: "{{ services_location }}/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "755"
+  loop: "{{ nagios_deregistration_services }}"
+  when: auto_deregister_client and ansible_distribution_major_version > '6'
+  notify: enable-scripts
+
 - name: Create add/remove host scripts
   template:
     src: "{{ item.file }}.j2"
