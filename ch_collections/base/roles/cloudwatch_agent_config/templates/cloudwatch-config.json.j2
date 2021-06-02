@@ -32,8 +32,8 @@
       "procstat": [
         {%+ for procstat in cw_collect_procstat_metrics -%}
         {
-          "pid_file": {{ procstat.pid }},
-          "measurement": {{ procstat.measurement }}
+          "pid_file": "{{ procstat.pid }}",
+          "measurement": "{{ procstat.measurement }}"
         }{%+ if not loop.last -%},{%+ endif -%}
         {%+ endfor -%}
       ]
@@ -41,7 +41,7 @@
     {% if cw_collect_metrics_append_dimensions is defined -%}
     "append_dimensions": {
       {%+ for dimension in cw_collect_metrics_append_dimensions -%}
-        {{ dimension.option }}: {{ dimension.setting }}
+        "{{ dimension.option }}": "{{ dimension.setting }}"
     {% endif -%}
     "force_flush_interval": {{ force_flush_interval }}
   }
