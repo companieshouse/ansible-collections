@@ -3,7 +3,7 @@ cwa_agent_config_file: "cloudwatch-config.json"
 cw_agent_user: "cwagent"
 
 metrics_collection_interval: 60
-
+force_flush_interval: 60
 cloudwatch_agent_log_file: "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log"
 
 region: "eu-west-2"
