@@ -34,7 +34,7 @@
         {%+ for procstat in cw_collect_metrics.procstats -%}
         {
           "pid_file": "{{ procstat.pid }}",
-          "measurement": {{ procstat.measurement }}
+          "measurement": {{ procstat.measurement | to_json}}
         }{%+ if not loop.last -%},{%+ endif -%}
         {%+ endfor -%}
       ]{% endif -%}
