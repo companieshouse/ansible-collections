@@ -44,7 +44,8 @@
       {%+ for dimension in cw_collect_metrics.append_dimensions -%}
         "{{ dimension.option }}": "{{ dimension.setting }}"{%+ if not loop.last -%},{%+ endif -%}
         {%+ endfor -%}
-    {% endif -%}
+      {% endif -%}
+    },
     "force_flush_interval": {{ cw_collect_metrics.force_flush_interval | default(60) }}
   }
   {% endif -%}
