@@ -8,6 +8,8 @@
         image: "geerlingguy/docker-centos7-ansible"
       - name: centos6
         image: "geerlingguy/docker-centos6-ansible"
+      - name: amzn-2
+        image: "geerlingguy/docker-amazonlinux2-ansible"
   roles:
     - role: provision_docker
       provision_docker_inventory: "{{ inventory }}"
@@ -17,6 +19,7 @@
   hosts: 
     - centos6
     - centos7
+    - amzn-2
   become: true
   pre_tasks:
   - name: Prereq - Setup Centos6 Vault mirrors
