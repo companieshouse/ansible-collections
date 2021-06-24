@@ -30,7 +30,8 @@
 - name: Create users
   user:
     name: "{{ item.name }}"
-    groups: "{{ item.group }}"
+    groups: "{{ item.group | default(omit) }}"
+    create_home: "{{ item.create_home | default(yes) }}"
     state: present
   loop: "{{ users }}"
 
@@ -85,7 +86,7 @@
   vars:
     ansible_python_interpreter: /usr/bin/python2.6
   lineinfile:
-    path: "{{ user_home_path }}/.bash_profile"
+    path: "{{ app_user_home_path }}/.bash_profile"
     line: '{{ item }}'
   with_items: '{{ env_var }}'
 # Configure oracle ld config
