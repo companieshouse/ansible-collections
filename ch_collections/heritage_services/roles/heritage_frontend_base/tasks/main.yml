@@ -31,7 +31,7 @@
   user:
     name: "{{ item.name }}"
     groups: "{{ item.group | default(omit) }}"
-    create_home: "{{ item.create_home | default(yes) }}"
+    create_home: "{{ item.create_home | default('yes') }}"
     state: present
   loop: "{{ users }}"
 
