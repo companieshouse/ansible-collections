@@ -22,6 +22,23 @@ function check_mounts {
   done < "${mountconf}"
 }
 
+function check_mounts_absolute {
+  while IFS= read -r line; do
+    mount=$(echo "$line" | awk '{print $1}')
+    #For each mount, check if we can list its mountpoint directory. If it exists and is of type 'nfs' continue. Else error and mark as unhealthy.
+    if timeout --signal=KILL $list_timeout ls -d "${mount}/" >/dev/null 2>&1 ; then
+      # Can access mount point within timeout, checking it is NFS... 
+      if [ $( df -P -T "${mount}" | tail -n +2 | awk '{print $2}' | grep -q 'nfs' ; echo $? ) -ne 0 ] ; then
+        echo "Mount point "${mount}" is accessable , but is not NFS."
+        mark_as_unhealthy
+      fi
+    else  
+      echo "Timeout/Error on accessing mount for ${mount}" 
+      mark_as_unhealthy
+    fi
+  done < "${mountconf}"
+}
+
 function mark_as_unhealthy {
   echo "Getting instance ID from metadata URL" 
   instance_id=$(curl -s http://169.254.169.254/2020-10-27/meta-data/instance-id)
@@ -31,6 +48,15 @@ function mark_as_unhealthy {
 }
 
 while true; do
-  check_mounts
+  
+  # Check if the mountdir is set as global in autofs, pick function based on outcome
+  if [[ ${mountdir} -ne "/-" ]]
+  then
+    check_mounts
+  else
+    check_mounts_absolute
+  fi
+  
   sleep $loop_time
+
 done
