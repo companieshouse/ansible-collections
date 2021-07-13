@@ -49,11 +49,13 @@ function mark_as_unhealthy {
 
 while true; do
   
-  # Check if the mountdir is set as global in autofs, pick function based on outcome
-  if [[ ${mountdir} -ne "/-" ]]
+  # Check if the mountdir is set as global (/-) in autofs, pick function based on outcome
+  if [[ ${mountdir} == "/-" ]]
   then
+    echo "Mountdir = ${mountdir}; running absolute mount checks:"
     check_mounts
   else
+    echo "Mountdir = ${mountdir}; running relative mount checks:"
     check_mounts_absolute
   fi
   
