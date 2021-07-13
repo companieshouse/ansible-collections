@@ -10,13 +10,5 @@ curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/host?apikey=$API_KEY&pre
 sleep 1;
 curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/service?apikey=$API_KEY&pretty=1" -d "host_name=$HOSTNAME&service_description=Ping&use=xiwizard_linuxserver_ping_service&force=1&applyconfig=1";
 sleep 1;
-{% if nrpe_command is defined %}
-############## Ansible populated Commands 
-{% for command in nrpe_command %}
-curl -XPOST "http://$NAGIOS_HOST/nagiosxi/api/v1/config/service?apikey=$API_KEY&pretty=1" -d "host_name=$HOSTNAME&service_description={{ command }}&use={{ command }}&force=1&applyconfig=1";
-sleep 1;
-{%+ if loop.last -%}############## {%+ endif -%} 
-{% endfor %}
-{% endif %}
 
 
