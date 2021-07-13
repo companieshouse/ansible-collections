@@ -53,10 +53,10 @@ while true; do
   if [[ ${mountdir} == "/-" ]]
   then
     echo "Mountdir = ${mountdir}; running absolute mount checks:"
-    check_mounts
+    check_mounts_absolute
   else
     echo "Mountdir = ${mountdir}; running relative mount checks:"
-    check_mounts_absolute
+    check_mounts
   fi
   
   sleep $loop_time
