@@ -9,9 +9,8 @@
     service:
       name: autofs
       state: restarted
-    notify: Restart autofs (3)
 
-  - name: Restart autofs (3)
+  - name: Restart nfswatcher
     service:
       name: nfs-watcher
       state: started
