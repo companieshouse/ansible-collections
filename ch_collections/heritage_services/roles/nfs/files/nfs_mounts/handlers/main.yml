@@ -15,3 +15,5 @@
     service:
       name: nfs-watcher
       state: started
+    when: install_watcher_service
+

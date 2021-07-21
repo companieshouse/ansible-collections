@@ -6,3 +6,4 @@ default_mount_options: [
   "hard",
   "nointr"
 ]
+install_watcher_service: true
