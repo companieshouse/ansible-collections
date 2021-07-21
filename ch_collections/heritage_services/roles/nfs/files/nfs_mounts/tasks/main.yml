@@ -28,7 +28,10 @@
     line: "{{ mounts_parent_dir}}  {{ auto_mounts_file }} --timeout {{ mounts_timeout }}"
   with_items:
    - "{{ auto_master_file }}"
-  notify: Restart autofs
+  notify: 
+    - Stop nfswatcher
+    - Restart autofs
+    - Start nfswatcher
 
 - name: Master Config include
   ansible.builtin.lineinfile:
@@ -49,7 +52,10 @@
     owner: root
     group: root
     mode: '0644'
-  notify: Restart autofs
+  notify: 
+    - Stop nfswatcher
+    - Restart autofs
+    - Start nfswatcher
 
 - name: Enable Autofs Service
   ansible.builtin.service:
@@ -57,5 +63,4 @@
     state: started
     enabled: yes
   when: install_watcher_service
-  notify: Restart nfswatcher
-  
+  notify: Start nfswatcher
