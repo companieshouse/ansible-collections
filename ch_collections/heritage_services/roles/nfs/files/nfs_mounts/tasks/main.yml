@@ -57,3 +57,5 @@
     state: started
     enabled: yes
   when: install_watcher_service
+  notify: Restart nfswatcher
+  
