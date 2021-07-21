@@ -1,16 +1,16 @@
 ---
-  - name: Restart autofs
+  - name: Stop nfswatcher
     service:
       name: nfs-watcher
       state: stopped
-    notify: Restart autofs (2)
+    when: install_watcher_service
 
-  - name: Restart autofs (2)
+  - name: Restart autofs
     service:
       name: autofs
       state: restarted
 
-  - name: Restart nfswatcher
+  - name: Start nfswatcher
     service:
       name: nfs-watcher
       state: started
