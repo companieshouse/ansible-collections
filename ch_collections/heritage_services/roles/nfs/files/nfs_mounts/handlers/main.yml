@@ -1,4 +1,11 @@
 ---
+  - name: restorecon
+    vars:
+      ansible_python_interpreter: /usr/bin/python2
+    ansible.builtin.command: restorecon -irv {{ item }}
+    loop: "{{ autofs_selinux_paths }}"
+    when: selinux_status == "Enforcing"
+
   - name: Stop nfswatcher
     service:
       name: nfs-watcher
