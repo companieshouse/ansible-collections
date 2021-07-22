@@ -60,7 +60,6 @@
     - Restart autofs
     - Start nfswatcher
 
-
 - name: test to see if selinux is running
   command: getenforce
   register: sestatus
@@ -69,8 +68,7 @@
 - set_fact:
     selinux_status: "{{ sestatus.stdout  }}"
 
-
-- name: SELinux Contexts for configs (1/2)
+- name: SELinux Contexts for configs
   vars:
     ansible_python_interpreter: /usr/bin/python2
   community.general.sefcontext:
@@ -86,5 +84,7 @@
     name: autofs
     state: started
     enabled: yes
-  when: install_watcher_service
-  notify: Start nfswatcher
+  notify: 
+    - Stop nfswatcher
+    - Restart autofs
+    - Start nfswatcher
