@@ -7,3 +7,8 @@ default_mount_options: [
   "nointr"
 ]
 install_watcher_service: true
+
+autofs_selinux_paths:
+  - "{{ auto_mounts_file }}"
+  - "{{ auto_master_file }}"
+  - "{{ auto_master_file | dirname }}"

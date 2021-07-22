@@ -7,8 +7,3 @@ mounts_role_dir: "/root"
 
 nfs_watcher_wait_time: 15
 nfs_watcher_list_timeout: 5
-
-autofs_selinux_paths:
-  - "{{ auto_mounts_file }}"
-  - "{{ auto_master_file }}"
-  - "{{ auto_master_file | dirname }}"
