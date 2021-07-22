@@ -43,7 +43,10 @@
     mode: 0644
     regexp: '{{ auto_master_file_include_regex }}'
     line: '{{ auto_master_file_include_line }}'
-  notify: Restart autofs
+  notify: 
+    - Stop nfswatcher
+    - Restart autofs
+    - Start nfswatcher
 
 - name: Template mounts
   ansible.builtin.template:
@@ -56,6 +59,27 @@
     - Stop nfswatcher
     - Restart autofs
     - Start nfswatcher
+
+
+- name: test to see if selinux is running
+  command: getenforce
+  register: sestatus
+  changed_when: false
+
+- set_fact:
+    selinux_status: "{{ sestatus.stdout  }}"
+
+
+- name: SELinux Contexts for configs (1/2)
+  vars:
+    ansible_python_interpreter: /usr/bin/python2
+  community.general.sefcontext:
+    target: "{{ item }}"
+    setype: automount_var_run_t
+    state: present
+  loop: "{{ autofs_selinux_paths }}"
+  when: selinux_status == "Enforcing"
+  notify: restorecon
 
 - name: Enable Autofs Service
   ansible.builtin.service:
