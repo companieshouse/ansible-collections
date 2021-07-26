@@ -88,7 +88,8 @@
   lineinfile:
     path: "{{ app_user_home_path }}/.bash_profile"
     line: '{{ item }}'
-  with_items: '{{ env_var }}'
+  with_items: "{{env_var | combine(custom_env_vars, list_merge='append_rp')}}"
+  
 # Configure oracle ld config
 - name: Add config to ld.so.conf
   vars:

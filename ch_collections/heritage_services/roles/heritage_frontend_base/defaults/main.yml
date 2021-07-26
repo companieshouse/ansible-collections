@@ -23,6 +23,8 @@ env_var:
    - export LANG='en_US.UTF-8'
    - export LC_ALL='en_US.UTF-8'
 
+custom_env_vars: []
+
 ld_so_conf:
     - /usr/lib/oracle/11.2/client64/lib/
     - /usr/local/lib
