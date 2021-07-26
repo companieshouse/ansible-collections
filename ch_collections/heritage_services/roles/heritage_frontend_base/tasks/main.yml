@@ -87,8 +87,8 @@
     ansible_python_interpreter: /usr/bin/python2.6
   lineinfile:
     path: "{{ app_user_home_path }}/.bash_profile"
-    line: '{{ item }}'
-  with_items: "{{env_var | combine(custom_env_vars, list_merge='append_rp')}}"
+    line: '{{ item.value }}'
+  loop: "{{ default_env_vars | combine((custom_env_vars | default({})), recursive=True, list_merge='append_rp') | dict2items }}"
   
 # Configure oracle ld config
 - name: Add config to ld.so.conf
