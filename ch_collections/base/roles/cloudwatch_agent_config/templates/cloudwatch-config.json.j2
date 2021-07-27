@@ -14,7 +14,7 @@
         "collect_list": [
           {%+ for logname, logdata in cw_log_files.items() -%}
           {
-              "file_path": "{{ logdata.file_path | default(default_log_path) }}/{{ logname }}",
+              "file_path": "{{ log_file_path_prefix |  default("") }}{{ logdata.file_path | default(default_log_path) }}/{{ logdata.file_name | logname }}",
               "log_group_name": "{{ logdata.log_group_name | default(default_log_group_name) }}",
               "log_stream_name": "{instance_id}_{hostname}",
               "timezone": "Local"
