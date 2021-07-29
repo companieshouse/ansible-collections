@@ -25,7 +25,7 @@
     group: root
     mode: 0644
     regexp: '^\{{ mounts_parent_dir }}.*'
-    line: "{{ mounts_parent_dir}}  {{ auto_mounts_file }} --timeout {{ mounts_timeout }}"
+    line: "{{ mounts_parent_dir }}  {{ auto_mounts_file }} --timeout {{ mounts_timeout }}"
   with_items:
    - "{{ auto_master_file }}"
   notify: 
@@ -65,7 +65,8 @@
   register: sestatus
   changed_when: false
 
-- set_fact:
+- name: Set fact based on selinux status output from previous check
+  set_fact:
     selinux_status: "{{ sestatus.stdout  }}"
 
 - name: SELinux Contexts for configs
