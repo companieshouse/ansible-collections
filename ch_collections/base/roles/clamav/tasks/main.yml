@@ -49,6 +49,41 @@
     mode: 0644
   with_items: "{{ clamav_daemon_configuration_changes }}"
 
+- name: Setup scanning script and daily scanning
+  block: 
+    - name: Add clamav user to sudoers file
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/clamav
+        line: '{{ clamav_user }} ALL=(root) NOPASSWD: /usr/bin/clamdscan *'
+        validate: 'visudo -cf %s'
+        create: yes
+    - name: Add paths to exclude from scanning to clamd config
+      ansible.builtin.lineinfile:
+        path: "{{ clamav_daemon_config_path }}"
+        insertafter: '^.*ExcludePath .*$'
+        line: "ExcludePath {{ item }}"
+        state: "present"
+        mode: 0644
+      with_items: "{{ clamav_daemon_configuration_changes_exclude_paths }}"
+    - name: Add scanning script from template
+      ansible.builtin.copy:
+        src: clamav-scan.sh
+        dest: /usr/local/bin/clamav-scan.sh
+        owner: "{{ clamav_user }}"
+        group: "{{ clamav_user }}"
+        mode: '0655'
+    - name: Add scanning entry to cron 
+      ansible.builtin.cron:
+        name: clamav scan
+        minute: "{{ clamav_scanning_minute | default(0) }}"
+        hour: "{{ clamav_scanning_hour | default(03) }}"
+        weekday: "{{ clamav_scanning_weekday | default(omit) }}"
+        day: "{{ clamav_scanning_day | default(omit) }}"
+        month:  "{{ clamav_scanning_month | default(omit) }}"
+        user: "{{ clamav_user }}"
+        job: "/usr/local/bin/clamav-scan.sh"
+        cron_file: clamav-scan
+
 - name: Ensure ClamAV daemon is running (if configured).
   service:
     name: "{{ clamav_daemon }}"
