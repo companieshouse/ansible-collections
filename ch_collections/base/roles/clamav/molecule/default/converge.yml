@@ -1,0 +1,42 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=true cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+
+    - name: Add CentOS 6 base repo
+      template:
+        src: CentOS-Base.repo.j2
+        dest: /etc/yum.repos.d/CentOS-Base.repo
+        mode: 0755
+      register: centos_base_repo_template
+      when: (ansible_os_family == 'RedHat') and (ansible_distribution_major_version | int == 6)
+
+    - name: Set EPEL for CentOS/RHEL6
+      set_fact:
+        epel_repo_url: "https://archives.fedoraproject.org/pub/archive/epel/6/x86_64/epel-release-6-8.noarch.rpm"
+      when: (ansible_os_family == 'RedHat') and (ansible_distribution_major_version | int == 6)
+
+    - name: Set EPEL GPG for CentOS/RHEL6
+      set_fact:
+        epel_repo_gpg_key_url: "https://archives.fedoraproject.org/pub/archive/epel/RPM-GPG-KEY-EPEL"
+      when: (ansible_os_family == 'RedHat') and (ansible_distribution_major_version | int == 6)
+
+    - name: Set EPEL for Amazon Linux 2
+      set_fact:
+        epel_repo_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+      when: (ansible_distribution == 'Amazon') and (ansible_distribution_major_version | int == 2)
+
+    - name: Set EPEL GPG for Amazon Linux 2
+      set_fact:
+        epel_repo_gpg_key_url: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
+      when: (ansible_distribution == 'Amazon') and (ansible_distribution_major_version | int == 2)
+
+  roles:
+    - role: epel
+      when: ansible_os_family == 'RedHat'
+    - role: clamav
