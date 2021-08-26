@@ -7,7 +7,9 @@
 - name: Define clamav_freshclam_daemon.
   set_fact:
     clamav_freshclam_daemon: "{{ __clamav_freshclam_daemon }}"
-  when: clamav_freshclam_daemon is not defined
+  when: 
+    - clamav_freshclam_daemon is not defined
+    - __clamav_freshclam_daemon is defined
 
 - name: Define clamav_packages.
   set_fact:

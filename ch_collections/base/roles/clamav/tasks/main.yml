@@ -98,4 +98,6 @@
     name: "{{ clamav_freshclam_daemon }}"
     state: "{{ clamav_freshclam_daemon_state }}"
     enabled: "{{ clamav_freshclam_daemon_enabled }}"
-  when: ansible_virtualization_type != "docker"
+  when: 
+    - ansible_virtualization_type != "docker"
+    - clamav_freshclam_daemon is defined
