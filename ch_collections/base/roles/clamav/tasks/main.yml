@@ -18,8 +18,9 @@
 - name: Change configuration for the ClamAV Freshclam.
   lineinfile:
     path: "{{ clamav_freshclam_config_path }}"
-    regexp: '{{ item.regexp }}'
+    regexp: "{{ item.regexp | default(omit) }}"
     line: "{{ item.line | default('') }}"
+    insertbefore: "{{ item.before | default(omit) }}"
     state: "{{ item.state | default('present') }}"
   with_items: "{{ clamav_freshclam_configuration_changes }}"
 
