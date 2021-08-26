@@ -29,7 +29,7 @@ clamav_daemon_configuration_changes_exclude_paths:
 clamav_freshclam_configuration_changes:
   - regexp: '^#DNSDatabaseInfo .*$'
     line: 'DNSDatabaseInfo current.cvd.clamav.net'
-  - regexp: '^.*DatabaseMirror .*$'
+  - before: '^.*DatabaseMirror .*$'
     line: 'DatabaseMirror {{ clamav_mirror }}'
 
 # Scan scheduling:
