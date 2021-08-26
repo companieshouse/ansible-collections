@@ -3,7 +3,7 @@
 # clamav_packages: []
 # clamav_daemon_config_path: ''
 
-clamav_mirror: clamav.test
+clamav_mirror: database.clamav.net
 
 clamav_daemon_configuration_changes:
   - regexp: '^.*Example$'
