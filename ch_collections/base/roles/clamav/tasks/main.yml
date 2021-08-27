@@ -21,6 +21,7 @@
     regexp: "{{ item.regexp | default(omit) }}"
     line: "{{ item.line | default('') }}"
     insertbefore: "{{ item.before | default(omit) }}"
+    firstmatch: "{{ item.firstmatch | default('yes') }}"
     state: "{{ item.state | default('present') }}"
   with_items: "{{ clamav_freshclam_configuration_changes }}"
 
