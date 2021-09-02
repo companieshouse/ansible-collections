@@ -1,9 +1,6 @@
 ---
 - name: Prerequisites and Test
   hosts: all
-    # - centos7
-    # - centos6
-    # - amzn2
   become: true
   pre_tasks:
   - name: Prereq - Setup Centos6 Vault mirrors
