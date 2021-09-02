@@ -1,0 +1,67 @@
+---
+- name: Include distribution and version-specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family }}.yml"
+      
+- name: Install required packages
+  package:
+    name: '{{ item }}'
+    state: present
+  loop: '{{ packages }}'
+
+- name: Configure auditd service
+  ansible.builtin.lineinfile:
+    path:  "{{ auditd_config_path }}"
+    regexp: '^{{ item.key }}\s*=.*$'
+    line: "{{ item.key }} = {{ item.value }}"
+  with_dict: 
+    - max_log_file: 50
+    - max_log_file_action: rotate
+    - space_left_action: email
+    - action_mail_acct: root
+    - admin_space_left_action: rotate
+    - log_format: "{{ audit_log_format }}"
+
+- name: Configure rsyslog
+  ansible.builtin.lineinfile:
+    path:  "{{ rsyslog_config_path }}"
+    regexp: '^{{ item.key }}\s*=.*$'
+    line: "{{ item.key }} = {{ item.value }}"
+  with_dict: 
+    - active: "yes"
+
+- name: Configure grub commandline options
+  ansible.builtin.lineinfile:
+    path: "{{ grub_defaults_path }}"
+    regexp: '^(GRUB_CMDLINE_LINUX=(?:(?![" ]{{ item.key | regex_escape }}=).)*)(?:[" ]{{ item.key | regex_escape }}=\S+)?(.*")$'
+    line: '\1 {{ item.key | regex_escape }}={{ item.value | regex_escape }}\2'
+    backrefs: yes
+  when: (not ansible_os_family == "RedHat") and (not ansible_distribution_major_version == 6)
+  with_dict: 
+    - audit: 1  
+  notify: Generate grub config
+
+- name: Configure grub commandline options
+  ansible.builtin.command: 
+    cmd: grubby --update-kernel=ALL --args=audit=1
+  when: (ansible_os_family == "RedHat") and (ansible_distribution_major_version == 6)
+
+- name: Template audit rules
+  ansible.builtin.template:
+    src: "templates/auditd_rules.tpl"
+    dest: "{{ auditd_rules_path }}"
+    owner: root
+    group: root
+    mode: '0640'
+  notify: Generate audit rules
+
+- name: Enable Services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  loop: "{{ services }}"

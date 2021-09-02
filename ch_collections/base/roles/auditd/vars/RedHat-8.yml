@@ -1,0 +1,20 @@
+---
+packages:
+  - audit
+  - audit-libs
+  - audispd-plugins
+  - rsyslog
+
+services: 
+  - rsyslog
+  - auditd
+
+auditd_config_path: "/etc/audit/auditd.conf"
+auditd_rules_path: "/etc/audit/rules.d/audit.rules"
+audit_log_format: "ENRICHED"
+
+rsyslog_config_path: "/etc/audit/plugins.d/syslog.conf"
+
+grub_defaults_path: "/etc/default/grub"
+grub_config_path: "/boot/grub2/grub.cfg"
+grub_mkconfig_executable: "/usr/sbin/grub2-mkconfig"
