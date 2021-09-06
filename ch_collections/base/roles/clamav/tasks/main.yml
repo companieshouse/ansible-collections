@@ -78,8 +78,8 @@
     - name: Add scanning entry to cron 
       ansible.builtin.cron:
         name: clamav scan
-        minute: "{{ clamav_scanning_minute | default(0) }}"
-        hour: "{{ clamav_scanning_hour | default(03) }}"
+        minute: '{{ clamav_scanning_minute | default("0") }}'
+        hour: '{{ clamav_scanning_hour | default("03") }}'
         weekday: "{{ clamav_scanning_weekday | default(omit) }}"
         day: "{{ clamav_scanning_day | default(omit) }}"
         month:  "{{ clamav_scanning_month | default(omit) }}"
