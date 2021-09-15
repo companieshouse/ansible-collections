@@ -7,14 +7,6 @@
 - name: Install cron (RedHat).
   package: name=cronie state=present
 
-# Create socket file for ClamAV
-- name: Create the socket file with correct ownership
-  ansible.builtin.file:
-    path: "{{ clamav_daemon_localsocket }}"
-    state: touch
-    owner: clam
-    group: clam
-
 # Setup Cron job for Freshclam to run every hour
 - name: Freshclam cron.
   cron:

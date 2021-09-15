@@ -1,4 +1,8 @@
 ---
+- name: restorecon
+  ansible.builtin.command: restorecon -irv "{{ clamav_daemon_localsocket | dirname  }}"
+  when: selinux_status == "Enforcing"
+
 - name: restart clamav daemon
   service:
     name: "{{ clamav_daemon }}"
