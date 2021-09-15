@@ -44,8 +44,8 @@
 
 - name: SELinux Contexts for configs
   community.general.sefcontext:
-    target: "{{ clamav_daemon_localsocket | dirname  }}" # Just here needed?
-    setype: antivirus_var_run_t #Is this the right context? antivirus_t? Restorecon not in handlers?
+    target: "{{ clamav_daemon_localsocket | dirname  }}"
+    setype: antivirus_var_run_t 
     state: present
   when: selinux_status == "Enforcing"
   notify: restorecon
