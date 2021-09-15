@@ -25,6 +25,41 @@
     state: "{{ item.state | default('present') }}"
   with_items: "{{ clamav_freshclam_configuration_changes }}"
 
+# Create socket file for ClamAV
+- name: Create the socket file with correct ownership
+  ansible.builtin.file:
+    path: "{{ clamav_daemon_localsocket | dirname }}"
+    state: directory
+    owner: "{{ clamav_user }}"
+    group: "{{ clamav_user }}"
+
+- name: test to see if selinux is running
+  command: getenforce
+  register: sestatus
+  changed_when: false
+
+- name: Set fact based on selinux status output from previous check
+  set_fact:
+    selinux_status: "{{ sestatus.stdout  }}"
+
+- name: SELinux Contexts for configs
+  community.general.sefcontext:
+    target: "{{ clamav_daemon_localsocket | dirname  }}"
+    setype: antivirus_var_run_t 
+    state: present
+  when: selinux_status == "Enforcing"
+  notify: restorecon
+
+- name: Create persistent SELinux boolean policies
+  ansible.posix.seboolean:
+    name: "antivirus_can_scan_system"
+    state: yes
+    persistent: yes
+  when: selinux_status == "Enforcing"
+
+- name: Flush handlers to ensure selinux contexts are correct before continuing
+  meta: flush_handlers
+
 - name: Run freshclam after ClamAV packages change.
   command: freshclam
   when: clamav_packages_install.changed

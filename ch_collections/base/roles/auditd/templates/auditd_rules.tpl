@@ -76,7 +76,7 @@
 -w /etc/group -p wa -k T1087.001_1
 -w /etc/gshadow -p wa -k T1087.001_3
 -w /etc/hosts -p wa -k audit_network_modifications
--w /etc/issue.net -p wa -k system-locale
+#-w /etc/issue.net -p wa -k system-locale
 -w /etc/issue -p wa -k audit_network_modifications
 -w /etc/localtime -p wa -k T1070.006_5
 -w /etc/passwd -p wa -k T1087.001_2
