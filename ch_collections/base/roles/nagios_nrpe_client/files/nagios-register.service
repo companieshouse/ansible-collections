@@ -3,6 +3,7 @@ Description=Script that registers clients to Nagios on boot
 DefaultDependencies=no
 After=network.target
 After=network-online.target
+After=cloud-final.target
 
 [Service]
 Type=oneshot
