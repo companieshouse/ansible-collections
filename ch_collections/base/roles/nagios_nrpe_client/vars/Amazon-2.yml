@@ -12,6 +12,5 @@ nrpe_plugin_packages:
 services_location: /etc/systemd/system/
 nagios_registration_services: 
   - nagios-register.service
-nagios_deregistration_services:
   - nagios-remove.service
 check_service_trusted_exit_code: 1
