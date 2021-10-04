@@ -30,7 +30,7 @@ Example Playbook
   become: true
   roles:
     - geerlingguy.ansible-role-repo-epel
-    - christiangda.cloudwatch-agent
+    - https://github.com/companieshouse/ansible-role-amazon-cloudwatch-agent.git
       vars:
         cwa_conf_json_file_content: "{{ lookup('file', 'files/cloudwatch-config.json') }}"
     - cloudwatch_agent_helper
