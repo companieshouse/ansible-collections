@@ -1,0 +1,9 @@
+---
+nfs_packages:
+  - autofs
+  - nfs-utils
+
+auto_master_file: "/etc/ansible.autofsmaster"
+auto_mounts_file: "/etc/ansible.nfsmounts"
+auto_master_file_include_regex: '\+ansible\.autofsmaster'
+auto_master_file_include_line: "+ansible.autofsmaster"

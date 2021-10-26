@@ -1,0 +1,9 @@
+---
+install_watcher_service: true
+service_executable: "/usr/bin/nfs-watcher.sh"
+service_name: "nfs-watcher"
+
+mounts_role_dir: "/root"
+
+nfs_watcher_wait_time: 15
+nfs_watcher_list_timeout: 5

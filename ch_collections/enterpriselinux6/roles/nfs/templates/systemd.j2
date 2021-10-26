@@ -1,0 +1,12 @@
+[Unit]
+Description={{ service_name }}
+After=network.target autofs.service
+
+[Service]
+Type={{ systemd_service_type }}
+ExecStart={{ service_executable }}
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
