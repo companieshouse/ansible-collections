@@ -9,6 +9,8 @@
       skip: true
 
 - name: Install Packages
+  vars:
+    ansible_python_interpreter: /usr/bin/python2
   ansible.builtin.package: 
     name: "{{ item }}"
     state: present
@@ -48,6 +50,8 @@
     mode: '0755'
 
 - name: Copy NFS mount role to roles directory
+  vars:
+    ansible_python_interpreter: /usr/bin/python2
   ansible.builtin.copy:
     src: nfs_mounts
     dest: "{{ mounts_role_dir }}/roles/"
