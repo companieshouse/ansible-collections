@@ -24,7 +24,8 @@
       }
     },
     "log_stream_name": "{instance_id}_{hostname}"
-  }{% endif -%}{% if cw_collect_metrics is defined -%},
+  }{% if cw_collect_metrics is defined -%},{% endif -%}{% endif -%}
+  {% if cw_collect_metrics is defined -%}
   "metrics": {
     "metrics_collected": {
       {% if cw_collect_metrics.procstats is defined -%}
