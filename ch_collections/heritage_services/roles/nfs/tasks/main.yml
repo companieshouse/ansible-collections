@@ -38,7 +38,7 @@
   ansible.builtin.service:
     name: "{{ service_name }}"
     enabled: yes
-    state: stopped
+    state: "{{ watcher_service_state }}"
   when: install_watcher_service
 
 - name: Create roles directory if it does not exist
