@@ -1,5 +1,6 @@
 ---
 install_watcher_service: true
+watcher_service_state: "stopped"
 service_executable: "/usr/bin/nfs-watcher.sh"
 service_name: "nfs-watcher"
 
