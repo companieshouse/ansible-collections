@@ -1,0 +1,15 @@
+---
+#Example vars:
+# default_nfs_server_address: "1.2.3.4"
+# mounts: 
+#   nfs1:
+#     local_mount_point: "nfs1mountdir"
+#     mount_options: 
+#       - "rw"
+#       - "soft"
+#       - "intr"
+#       - "rsize=8192"
+#       - "wsize=8192"
+#   nfs2:
+#   nfs3:
+#     nfs_server_address: "4.3.2.1"

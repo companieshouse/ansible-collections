@@ -42,4 +42,5 @@ nrpe_command:
 sudo_commands:
   - "{{ nrpe_plugins_dir }}/check_init_service"
   - "{{ nrpe_plugins_dir }}/check_service.sh"
+  - "{{ nrpe_plugins_dir }}/check_docker"
 

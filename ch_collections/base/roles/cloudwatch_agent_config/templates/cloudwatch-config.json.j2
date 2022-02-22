@@ -12,43 +12,40 @@
     "logs_collected": {
       "files": {
         "collect_list": [
-          {%+ for logname, logdata in cw_log_files.items() -%}
+          {% for logname, logdata in cw_log_files.items() -%}
           {
               "file_path": "{{ log_file_path_prefix |  default("") }}{{ logdata.file_path | default(default_log_path) }}/{{ logdata.file_name | default(logname) }}",
               "log_group_name": "{{ logdata.log_group_name | default(default_log_group_name) }}",
               "log_stream_name": "{instance_id}_{hostname}",
               "timezone": "Local"
-          }{%+ if not loop.last -%},{%+ endif -%}
-          {%+ endfor -%}
+          }{% if not loop.last -%},{% endif -%}
+          {% endfor -%}
         ]
       }
     },
     "log_stream_name": "{instance_id}_{hostname}"
-  {% endif -%}
+  }{% if cw_collect_metrics is defined -%},{% endif -%}{% endif -%}
   {% if cw_collect_metrics is defined -%}
-  },
   "metrics": {
     "metrics_collected": {
       {% if cw_collect_metrics.procstats is defined -%}
       "procstat": [
-        {%+ for procstat in cw_collect_metrics.procstats -%}
+        {% for procstat in cw_collect_metrics.procstats -%}
         {
           "pid_file": "{{ procstat.pid }}",
           "measurement": {{ procstat.measurement | to_json}}
-        }{%+ if not loop.last -%},{%+ endif -%}
-        {%+ endfor -%}
+        }{% if not loop.last -%},{% endif -%}
+        {% endfor -%}
       ]{% endif -%}
     },
     {% if cw_collect_metrics.append_dimensions is defined -%}
     "append_dimensions": {
-      {%+ for dimension in cw_collect_metrics.append_dimensions -%}
-        "{{ dimension.option }}": "{{ dimension.setting }}"{%+ if not loop.last -%},{%+ endif -%}
-        {%+ endfor -%}
+      {% for dimension in cw_collect_metrics.append_dimensions -%}
+        "{{ dimension.option }}": "{{ dimension.setting }}"{% if not loop.last -%},{% endif -%}
+        {% endfor -%}
       {% endif -%}
     },
     "force_flush_interval": {{ cw_collect_metrics.force_flush_interval | default(60) }}
   }
-  {% else -%}
-  }
-  {% endif -%}
+{% endif -%}
 }

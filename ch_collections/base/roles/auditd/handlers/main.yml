@@ -1,0 +1,9 @@
+---
+- name: Generate grub config
+  ansible.builtin.command: 
+    cmd: "{{grub_mkconfig_executable}} -o {{grub_config_path}}"
+
+- name: Generate audit rules
+  ansible.builtin.command: 
+    cmd: augenrules --load
+

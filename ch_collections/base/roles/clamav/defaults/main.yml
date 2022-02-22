@@ -1,0 +1,50 @@
+---
+# See the defaults for OS-specific vars inside the vars/ directory.
+# clamav_packages: []
+# clamav_daemon_config_path: ''
+
+clamav_mirror: database.clamav.net
+
+clamav_daemon_configuration_changes:
+  - regexp: '^.*Example$'
+    state: absent
+  - regexp: '^.*LocalSocket .*$'
+    line: 'LocalSocket {{ clamav_daemon_localsocket }}'
+  - regexp: '^.*ExtendedDetectionInfo .*$'
+    line: 'ExtendedDetectionInfo yes'
+  - regexp: '^.*FixStaleSocket .*$'
+    line: 'FixStaleSocket yes'
+  - regexp: '^.*LogTime .*$'
+    line: 'LogTime yes'
+  - regexp: '^.*MaxDirectoryRecursion .*$'
+    line: 'MaxDirectoryRecursion 0'
+  - regexp: '^.*MaxThreads .*$'
+    line: 'MaxThreads 32'
+
+clamav_daemon_configuration_changes_exclude_paths:
+  - ^/dev/
+  - ^/proc/
+  - ^/sys/
+
+clamav_freshclam_configuration_changes:
+  - regexp: '^#DNSDatabaseInfo .*$'
+    line: 'DNSDatabaseInfo current.cvd.clamav.net'
+  - before: '^.*DatabaseMirror .*$'
+    line: 'DatabaseMirror {{ clamav_mirror }}'
+
+# Scan scheduling:
+clamav_scanning_minute: "10"
+clamav_scanning_hour: "02"
+  
+# clamav_daemon: 'clamav-daemon'
+clamav_daemon_state: started
+clamav_daemon_enabled: true
+
+# clamav_freshclam_daemon: 'clamav-freshclam'
+clamav_freshclam_daemon_state: started
+clamav_freshclam_daemon_enabled: true
+
+
+# ExcludePath ^/dev/
+# ExcludePath ^/proc/
+# ExcludePath ^/sys/

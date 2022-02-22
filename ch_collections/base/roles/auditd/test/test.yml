@@ -1,0 +1,32 @@
+---
+- name: Prerequisites and Test
+  hosts: all
+  become: true
+  pre_tasks:
+  - name: Prereq - Setup Centos6 Vault mirrors
+    copy:
+      dest: /etc/yum.repos.d/CentOS-Base.repo
+      force: yes
+      mode: 0755
+      content: |
+        [base]
+        name=Base
+        baseurl=http://vault.centos.org/6.10/os/$basearch/
+        enabled=1
+        metadata_expire=never
+        [updates]
+        name=Updates
+        baseurl=http://vault.centos.org/6.10/updates/$basearch/
+        enabled=1
+        metadata_expire=never
+        [extras]
+        name=Extras
+        baseurl=http://vault.centos.org/6.10/extras/$basearch/
+        enabled=1
+        metadata_expire=never
+    when: (ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version'] == "6")
+  
+  roles:
+    - role: "../../auditd"
+      vars:
+        
