@@ -8,4 +8,6 @@ base_ami_dependencies:
 additional_packages: []
 remove_packages: []
 additional_packages_pip: []
-pip_executable: ""
+pip_package: python3-pip
+pip_executable: "{{ 'pip3' if pip_package.startswith('python3') else 'pip' }}"
+

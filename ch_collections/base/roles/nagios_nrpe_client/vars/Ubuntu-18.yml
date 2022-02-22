@@ -1,0 +1,17 @@
+---
+  nrpe_service: nagios-nrpe-server
+  nrpe_dir: /etc/nagios
+  nrpe_conf_dir: /etc/nagios/
+  nrpe_plugins_dir: /usr/lib/nagios/plugins
+  nrpe_packages:
+    - nagios-nrpe-server
+  nrpe_plugin_packages:
+    - nagios-plugins
+  
+  # registration script
+  services_location: /etc/systemd/system/
+  nagios_registration_services: 
+    - nagios-register.service
+  nagios_deregistration_services:
+    - nagios-remove.service
+  check_service_trusted_exit_code: 1

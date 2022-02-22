@@ -17,6 +17,11 @@
     state: present
   loop: '{{ additional_packages }}'
 
+- name: Check if PIP is installed
+  package:
+    name: '{{ pip_package }}'
+    state: present
+
 - name: Install additional dependencies supplied (pip)
   pip: 
     name: '{{ item.name }}'

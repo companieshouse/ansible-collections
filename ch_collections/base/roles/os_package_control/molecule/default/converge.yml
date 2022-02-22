@@ -4,13 +4,16 @@
   become: true
 
   vars:
-    pip_install_packages:
-      # Test installing a specific version of a package.
-      - name: ipaddress
-        version: "1.0.18"
-      # Test installing a package by name.
-      - colorama
-
+      base_ami_dependencies:
+        - openssl
+        - openssh-server
+      additional_packages:
+        - php
+      remove_packages: 
+        - php
+      additional_packages_pip:
+        - name: awscli
+          umask: "0022"
   pre_tasks:
     - name: Update apt cache.
       apt: update_cache=true cache_valid_time=600
@@ -33,4 +36,4 @@
         or (ansible_distribution == 'Ubuntu') and (ansible_distribution_major_version | int < 18)
 
   roles:
-    - role: geerlingguy.pip
+    - role: os_package_control
