@@ -30,6 +30,6 @@
   "metrics": {
     "metrics_collected": {{ cw_collect_metrics | to_nice_json | default({} )}},
     "force_flush_interval": {{ force_flush_interval }}
-  {% endif -%}
   }
+  {% endif -%}
 }
