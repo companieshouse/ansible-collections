@@ -27,5 +27,6 @@
   }{% if cw_collect_metrics is defined -%},{% endif -%}{% endif -%}
   "metrics": {
     "metrics_collected": {{ cw_collect_metrics }}
+    "force_flush_interval": {{ force_flush_interval }}
   }
 }
