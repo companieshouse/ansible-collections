@@ -1,0 +1,29 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=true cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+
+    - name: Add CentOS 6 base repo
+      template:
+        src: CentOS-Base.repo.j2
+        dest: /etc/yum.repos.d/CentOS-Base.repo
+        mode: 0755
+      register: centos_base_repo_template
+      when: (ansible_os_family == 'RedHat') and (ansible_distribution_major_version | int == 6)
+
+    - name: Install CloudWatch Agent
+      apt:
+        deb: https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+      when: ansible_os_family == 'Debian'
+    
+    - name: Install CloudWatch Agent
+      yum: 
+        name: https://s3.amazonaws.com/amazoncloudwatch-agent/centos/amd64/latest/amazon-cloudwatch-agent.rpm
+      when: ansible_os_family == 'RedHat'
+
+  roles:
+    - role: cloudwatch_agent_config

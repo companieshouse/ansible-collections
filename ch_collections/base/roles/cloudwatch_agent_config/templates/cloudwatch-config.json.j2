@@ -24,9 +24,10 @@
       }
     },
     "log_stream_name": "{instance_id}_{hostname}"
-  }{% if cw_collect_metrics is defined -%},{% endif -%}{% endif -%}
+  },
+  {% endif -%}
   "metrics": {
-    "metrics_collected": {{ cw_collect_metrics }}
+    "metrics_collected": {{ cw_collect_metrics | to_nice_json }},
     "force_flush_interval": {{ force_flush_interval }}
   }
 }
