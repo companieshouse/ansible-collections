@@ -15,7 +15,7 @@ cw_collect_metrics: {
       "used",
       "used_percent"
     ],
-    "metrics_collection_interval": 300,
+    "metrics_collection_interval": 120,
     "resources": [
       "/",
       "/tmp"
