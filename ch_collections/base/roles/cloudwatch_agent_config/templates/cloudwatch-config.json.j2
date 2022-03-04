@@ -27,25 +27,7 @@
   }{% if cw_collect_metrics is defined -%},{% endif -%}{% endif -%}
   {% if cw_collect_metrics is defined -%}
   "metrics": {
-    "metrics_collected": {
-      {% if cw_collect_metrics.procstats is defined -%}
-      "procstat": [
-        {% for procstat in cw_collect_metrics.procstats -%}
-        {
-          "pid_file": "{{ procstat.pid }}",
-          "measurement": {{ procstat.measurement | to_json}}
-        }{% if not loop.last -%},{% endif -%}
-        {% endfor -%}
-      ]{% endif -%}
-    },
-    {% if cw_collect_metrics.append_dimensions is defined -%}
-    "append_dimensions": {
-      {% for dimension in cw_collect_metrics.append_dimensions -%}
-        "{{ dimension.option }}": "{{ dimension.setting }}"{% if not loop.last -%},{% endif -%}
-        {% endfor -%}
-      {% endif -%}
-    },
-    "force_flush_interval": {{ cw_collect_metrics.force_flush_interval | default(60) }}
+    "metrics_collected": {{ cw_collect_metrics }}
   }
-{% endif -%}
+  {% endif -%}
 }
