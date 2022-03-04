@@ -6,3 +6,32 @@ metrics_collection_interval: 60
 cloudwatch_agent_log_file: "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log"
 
 region: "eu-west-2"
+
+cw_collect_metrics: {
+  "disk": {
+    "measurement": [
+      "total",
+      "used",
+      "used_percent"
+    ],
+    "metrics_collection_interval": 300,
+    "resources": [
+      "/",
+      "/tmp"
+    ]
+  },
+  "mem": {
+     "measurement": [
+        "total",
+        "used_percent",
+        "available_percent",
+        "cached"
+    ]
+  },
+  "swap": {
+     "measurement": [
+        "free",
+        "used_percent"
+    ]
+  }
+}
