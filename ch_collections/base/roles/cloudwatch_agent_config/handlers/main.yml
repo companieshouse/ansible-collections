@@ -1,4 +1,11 @@
 - name: Reload CloudWatch Agent
+  ansible.builtin.copy:
+    src: "{{ cwa_agent_config_file }}"
+    dest: /tmp/cwa_agent_config_file
+  notify: Reload CloudWatch Agent 2
+  when: ansible_virtualization_type != "docker"
+
+- name: Reload CloudWatch Agent 2
   ansible.builtin.command:
-    cmd: "{{ cwa_agent_ctl }} -a fetch-config -m ec2 -c file:{{ cwa_agent_config_file }} -s"
+    cmd: "{{ cwa_agent_ctl }} -a fetch-config -m ec2 -c file:/tmp/cwa_agent_config_file -s"
   when: ansible_virtualization_type != "docker"
