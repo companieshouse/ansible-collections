@@ -35,7 +35,7 @@
     },
     "force_flush_interval": {{ force_flush_interval }},
     {% if cw_namespace is defined -%}
-    "namespace": {{ cw_namespace }},
+    "namespace": "{{ cw_namespace }}",
     {% endif -%}
     "metrics_collected": {{ cw_collect_metrics | to_nice_json | default({} )}}
   }
