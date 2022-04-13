@@ -1,6 +1,6 @@
 - name: Template Cloudwatch agent config file
   ansible.builtin.template:
     src: templates/cloudwatch-config.json.j2
-    dest: "{{ cwa_agent_config_file }}"
+    dest: "{{working_dir}}{{ cwa_agent_config_file }}"
   notify: Reload CloudWatch Agent
   when: (cw_log_files is defined) or (cw_collect_metrics is defined)
