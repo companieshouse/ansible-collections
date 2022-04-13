@@ -1,6 +1,6 @@
 - name: Reload CloudWatch Agent
   ansible.builtin.copy:
-    src: "{{ cwa_agent_config_file }}"
+    src: "{{ working_dir }}{{ cwa_agent_config_file }}"
     dest: /tmp/cwa_agent_config_file
   notify: Reload CloudWatch Agent 2
   when: (ansible_virtualization_type != "docker") and (not ansible_check_mode)
