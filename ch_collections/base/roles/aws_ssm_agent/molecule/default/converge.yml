@@ -17,14 +17,6 @@
       register: centos_base_repo_template
       when: (ansible_os_family == 'RedHat') and (ansible_distribution_major_version | int == 6)
     
-    # - name: Fix for CentOS 8 Appstream error
-    #   block:
-    #     - name: Comment out mirror list
-    #       shell: sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
-    #     - name: Update URL for baseURL on CentOS repos
-    #       shell: sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
-    #   when: (ansible_os_family == 'RedHat') and (ansible_distribution_major_version | int == 8)
-
     - name: Fix for CentOS 8 Appstream error
       block:    
         - name: Find all of the files inside this directory
