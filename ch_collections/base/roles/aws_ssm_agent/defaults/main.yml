@@ -1,0 +1,7 @@
+---
+download_dir: /tmp
+aws_region: eu-west-2
+
+ssm_package_name: amazon-ssm-agent
+ssm_service_state: started
+ssm_service_enabled: true
