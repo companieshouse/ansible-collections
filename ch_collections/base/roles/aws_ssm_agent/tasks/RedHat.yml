@@ -1,0 +1,21 @@
+---
+
+- name: Install downloaded package
+  block:
+    - name: Install SSM Agent from SSM URL
+      ansible.builtin.yum:
+        name: "{{ ssm_url }}"
+        state: present
+        disable_gpg_check: yes
+  rescue:
+    - name: Install alternative from SSM Agent URL
+      ansible.builtin.yum:
+        name: "{{ alt_url }}"
+        state: present
+        disable_gpg_check: yes
+
+- name: Enabled and/or Start SSM Agent service
+  ansible.builtin.service:
+    name: "{{ ssm_package_name }}"
+    state: "{{ ssm_service_state }}"
+    enabled: "{{ ssm_service_enabled }}"

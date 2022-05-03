@@ -1,0 +1,44 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    ssm_service_state: stopped
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=true cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+
+    - name: Add CentOS 6 base repo
+      template:
+        src: CentOS-Base.repo.j2
+        dest: /etc/yum.repos.d/CentOS-Base.repo
+        mode: 0755
+      register: centos_base_repo_template
+      when: (ansible_os_family == 'RedHat') and (ansible_distribution_major_version | int == 6)
+    
+    - name: Fix for CentOS 8 Appstream error
+      block:    
+        - name: Find all of the files inside this directory
+          find:
+            paths: "/etc/yum.repos.d/"
+            patterns: "CentOS-*"
+          register: repos
+
+        - name: Comment out mirrorlist
+          replace:
+            path: "{{ item.path }}"
+            regexp: '^mirrorlist'
+            replace: '#mirrorlist'
+          with_items: "{{ repos.files }}"
+
+        - name: Update URL for baseurl on CentOS repos
+          replace:
+            path: "{{ item.path }}"
+            regexp: '^#baseurl=http://mirror.centos.org'
+            replace: 'baseurl=http://vault.centos.org'
+          with_items: "{{ repos.files }}"
+      when: (ansible_os_family == 'RedHat') and (ansible_distribution_major_version | int == 8)
+
+  roles:
+    - role: aws_ssm_agent
