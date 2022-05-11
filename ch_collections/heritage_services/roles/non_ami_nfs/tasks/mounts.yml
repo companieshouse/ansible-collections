@@ -1,0 +1,83 @@
+---
+
+- name: Setup Directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items: 
+    - "{{ mounts_parent_dir }}"
+
+- name: Master Config
+  ansible.builtin.lineinfile:
+    path: "{{ item }}"
+    create: yes
+    state: present
+    owner: root
+    group: root
+    mode: 0644
+    regexp: '^\{{ mounts_parent_dir }}.*'
+    line: "{{ mounts_parent_dir }}  {{ auto_mounts_file }} --timeout {{ mounts_timeout }}"
+  with_items:
+   - "{{ auto_master_file }}"
+  notify: 
+    - Stop nfswatcher
+    - Restart autofs
+    - Start nfswatcher
+
+- name: Master Config include
+  ansible.builtin.lineinfile:
+    path: "/etc/auto.master"
+    create: no
+    state: present
+    owner: root
+    group: root
+    mode: 0644
+    regexp: '{{ auto_master_file_include_regex }}'
+    line: '{{ auto_master_file_include_line }}'
+  notify: 
+    - Stop nfswatcher
+    - Restart autofs
+    - Start nfswatcher
+
+- name: Template mounts
+  ansible.builtin.template:
+    src: templates/mounts.j2
+    dest: "{{ auto_mounts_file }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: 
+    - Stop nfswatcher
+    - Restart autofs
+    - Start nfswatcher
+
+- name: test to see if selinux is running
+  command: getenforce
+  register: sestatus
+  changed_when: false
+
+- name: Set fact based on selinux status output from previous check
+  set_fact:
+    selinux_status: "{{ sestatus.stdout  }}"
+
+- name: SELinux Contexts for configs
+  vars:
+    ansible_python_interpreter: /usr/bin/python2
+  community.general.sefcontext:
+    target: "{{ item }}"
+    setype: automount_var_run_t
+    state: present
+  loop: "{{ autofs_selinux_paths }}"
+  when: selinux_status == "Enforcing"
+  notify: restorecon
+
+- name: Enable Autofs Service
+  ansible.builtin.service:
+    name: autofs
+    state: started
+    enabled: yes
+  notify: 
+    - Stop nfswatcher
+    - Restart autofs
+    - Start nfswatcher
