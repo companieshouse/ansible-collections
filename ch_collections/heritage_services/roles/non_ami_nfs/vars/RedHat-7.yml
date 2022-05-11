@@ -1,0 +1,16 @@
+---
+nfs_packages:
+  - autofs
+  - nfs-utils
+
+service_manager: "systemd"
+service_file_directory: "/etc/systemd/system/"
+service_file_suffix: ".service"
+service_file_mode: "0644"
+
+systemd_service_type: "simple"
+
+auto_master_file: "/etc/auto.master.d/ansible.autofsmaster"
+auto_mounts_file: "/etc/ansible.nfsmounts"
+auto_master_file_include_regex: '\+dir\:\/etc\/auto\.master\.d'
+auto_master_file_include_line: "+dir:/etc/auto.master.d"
