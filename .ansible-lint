@@ -1,5 +1,6 @@
 exclude_paths:
   - $HOME/.ansible/roles/
+  - ch_collections/base/roles/rhel7_cis/
 warn_list:
   - '206'  # Variables should have spaces before and after: {{ var_name }}
   - '208'  # File permissions unset or incorrect
