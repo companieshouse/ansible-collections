@@ -29,8 +29,14 @@
   {% if cw_collect_metrics is defined -%}
   "metrics": {
     "append_dimensions": {
+      {% if cw_asg_level_metrics is defined -%}
+      "AutoScalingGroupName": "${aws:AutoScalingGroupName}",
+      {% endif -%}
       "InstanceId": "${aws:InstanceId}"
     },
+    {% if cw_asg_level_metrics is defined -%}
+    "aggregation_dimensions": [["AutoScalingGroupName"]],
+    {% endif -%}
     "force_flush_interval": {{ force_flush_interval }},
     {% if cw_namespace is defined -%}
     "namespace": "{{ cw_namespace }}",
