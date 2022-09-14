@@ -127,6 +127,8 @@
     name: "{{ clamav_daemon }}"
     state: "{{ clamav_daemon_state }}"
     enabled: "{{ clamav_daemon_enabled }}"
+  async: 30
+  poll: 0
   when: ansible_virtualization_type != "docker"
 
 - name: Ensure ClamAV freshclam daemon is running (if configured).
@@ -134,6 +136,8 @@
     name: "{{ clamav_freshclam_daemon }}"
     state: "{{ clamav_freshclam_daemon_state }}"
     enabled: "{{ clamav_freshclam_daemon_enabled }}"
+  async: 30
+  poll: 0
   when: 
     - ansible_virtualization_type != "docker"
     - clamav_freshclam_daemon is defined
