@@ -7,6 +7,8 @@
   service:
     name: "{{ clamav_daemon }}"
     state: restarted
+  async: 30
+  poll: 0
   when: 
     - clamav_daemon_state != 'stopped' 
     - ansible_virtualization_type != "docker"
