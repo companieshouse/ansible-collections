@@ -1,0 +1,9 @@
+---
+
+   - name: Copy limit config
+     copy:
+       src: ./template/rootuser.conf
+       dest: /etc/security/limits.d/rootuser.conf
+       owner: root
+       group: root
+       mode: '0644
