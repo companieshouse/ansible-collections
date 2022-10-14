@@ -6,3 +6,21 @@
     owner: root
     group: root
     mode: '0644'
+
+- name: Copy amazon-cloudwatch-agent.service
+  copy:
+    src: ./template/amazon-cloudwatch-agent.service
+    dest: /etc/systemd/system/amazon-cloudwatch-agent.service
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+
+- name: Stop Cloudwatch agent
+  shell: amazon-cloudwatch-agent-ctl -a stop
+
+- name: Start Cloudwatch agent
+  shell: amazon-cloudwatch-agent-ctl -a start
+
+- name: Status Cloudwatch agent
+  shell: amazon-cloudwatch-agent-ctl -a status
