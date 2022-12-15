@@ -1,0 +1,30 @@
+---
+    - name: install epel
+      dnf:
+        name: epel-release
+        state: latest
+
+    - name: update-post-epel
+      dnf:
+        update_cache: yes
+
+    - name: Install rclone package and dependencies
+      package:
+        name:
+          - fuse
+          - rclone
+        state: present
+
+    - name: Make rclone config dir
+      ansible.builtin.file:
+        path: /root/.config/rclone/
+        state: directory
+        mode: '0600'
+
+    - name: Copy rclone config (for root user only)
+      copy:
+        src: ./template/rclone.conf
+        dest: /root/.config/rclone/rclone.conf
+        owner: root
+        group: root
+        mode: '0600'
