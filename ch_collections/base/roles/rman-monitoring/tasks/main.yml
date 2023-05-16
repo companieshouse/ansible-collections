@@ -1,0 +1,16 @@
+---
+  - name: install epel
+    dnf:
+      name: epel-release
+      state: latest
+
+  - name: update-post-epel
+    dnf:
+      update_cache: yes
+
+  - name: Install traceroute and atop for rman monitoring
+    package:
+      name:
+        - atop
+        - traceroute
+      state: present
