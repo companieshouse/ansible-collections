@@ -11,13 +11,6 @@
     state: present
   loop: '{{ base_ami_dependencies }}'
 
-- name: Install perl packages
-  package:
-    name:
-      - perl-Math-BigInt.noarch
-      - perl-Net-Ping.noarch
-    state: present
-
 - name: Install additional dependencies supplied
   package:
     name: '{{ item }}'
