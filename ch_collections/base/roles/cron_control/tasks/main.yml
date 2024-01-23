@@ -2,9 +2,9 @@
 - name: Disable cron job output emails
   cronvar:
     name: MAILTO
-    value: ""
+    value: "\"\""
     cron_file: "{{ item }}"
   loop:
     - /etc/crontab
     - /etc/cron.d/clamav-scan
-    - /etc/anacron
+    - /etc/anacrontab
