@@ -1,0 +1,17 @@
+---
+  - name: Copy login message files
+    ansible.builtin.copy:
+      src: "{{ item.name }}"
+      dest: "/{{ item.name }}"
+      owner: root
+      group: root
+      mode: "{{ item.mode }}"
+    loop:
+    - { name: "etc/motd", mode: '0644' }
+    - { name: "etc/profile.d/banner.sh", mode: '0644' }
+  - name: Disable pam motd
+    ansible.builtin.replace:
+      path: /etc/pam.d/sshd
+      regexp: '(\s+)session\ \ \ \ optional\ \ \ \ \ pam_motd.so(\s+.*)?$'
+      replace: '\1#session    optional     pam_motd.so\2'
+      backup: false
