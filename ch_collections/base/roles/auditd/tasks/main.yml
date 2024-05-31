@@ -50,14 +50,36 @@
     cmd: grubby --update-kernel=ALL --args=audit=1
   when: (ansible_os_family == "RedHat") and (ansible_distribution_major_version == 6)
 
-- name: Template audit rules
+- name: Template audit rules (RHEL6)
   ansible.builtin.template:
     src: "templates/auditd_rules.tpl"
     dest: "{{ auditd_rules_path }}"
     owner: root
     group: root
     mode: '0640'
+  when: (ansible_os_family == "RedHat") and (ansible_distribution_major_version == 6)
   notify: Generate audit rules
+
+- name: Template audit rules (RHEL7)
+  ansible.builtin.template:
+    src: "templates/auditd_rules.tpl"
+    dest: "{{ auditd_rules_path }}"
+    owner: root
+    group: root
+    mode: '0640'
+  when: (ansible_os_family == "RedHat") and (ansible_distribution_major_version == 7)
+  notify: Generate audit rules
+
+- name: Template audit rules (RHEL8)
+  ansible.builtin.template:
+    src: "templates/rhel8_auditd_rules.tpl"
+    dest: "{{ auditd_rules_path }}"
+    owner: root
+    group: root
+    mode: '0640'
+  when: (ansible_os_family == "RedHat") and (ansible_distribution_major_version == 8)
+  notify: Generate audit rules
+
 
 - name: Enable Services
   ansible.builtin.service:
