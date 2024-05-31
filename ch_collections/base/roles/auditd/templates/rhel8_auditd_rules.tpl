@@ -97,7 +97,6 @@
 -w /etc/cron.weekly/ -p wa -k T1053.003_7
 -w /etc/crontab -p wa -k T1053.003_8
 -w /var/spool/cron/crontabs/ -k T1053.003_9
--w /etc/inittab -p wa -k T1037_1
 -w /etc/init.d/ -p wa -k T1037_2
 -w /etc/init/ -p wa -k T1037_3
 -w /sbin/init -k T1037_4
