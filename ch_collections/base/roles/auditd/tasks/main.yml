@@ -70,6 +70,11 @@
   when: (ansible_os_family == "RedHat") and (ansible_distribution_major_version == 7)
   notify: Generate audit rules
 
+- name: Kill auditd
+  ansible.builtin.command: 
+    cmd: sudo systemctl kill auditd
+  when: (ansible_os_family == "RedHat") and (ansible_distribution_major_version == "8")
+
 - name: Template audit rules (RHEL8)
   ansible.builtin.template:
     src: "templates/rhel8_auditd_rules.tpl"
