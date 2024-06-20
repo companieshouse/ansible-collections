@@ -80,6 +80,16 @@
   when: (ansible_os_family == "RedHat") and (ansible_distribution_major_version == "8")
   notify: Generate audit rules
 
+- name: Template audit rules (RHEL9)
+  ansible.builtin.template:
+    src: "templates/rhel9_auditd_rules.tpl"
+    dest: "{{ auditd_rules_path }}"
+    owner: root
+    group: root
+    mode: '0640'
+  when: (ansible_os_family == "RedHat") and (ansible_distribution_major_version == "9")
+  notify: Generate audit rules
+
 
 - name: Enable Services
   ansible.builtin.service:
