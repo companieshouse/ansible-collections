@@ -82,7 +82,7 @@
 
 - name: Template audit rules (RHEL9)
   ansible.builtin.template:
-    src: "templates/rhel8_auditd_rules.tpl"
+    src: "templates/rhel9_auditd_rules.tpl"
     dest: "{{ auditd_rules_path }}"
     owner: root
     group: root
