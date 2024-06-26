@@ -85,9 +85,6 @@
 -w /etc/shadow -p wa -k T1087.001_4
 -w /etc/sudoers -p wa -k T1548.003_3
 -w /etc/sysconfig/network -p wa -k audit_network_modifications
--w /etc/init.d/ -p wa -k T1037_2
--w /etc/init/ -p wa -k T1037_3
--w /sbin/init -k T1037_4
 -w /etc/at.allow -p wa -k T1053.001_14
 -w /etc/at.deny -p wa -k T1053.001_15
 -w /var/spool/at/ -p wa -k T1053.001_16
