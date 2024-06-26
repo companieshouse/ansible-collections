@@ -85,24 +85,6 @@
 -w /etc/shadow -p wa -k T1087.001_4
 -w /etc/sudoers -p wa -k T1548.003_3
 -w /etc/sysconfig/network -p wa -k audit_network_modifications
--w /etc/at.allow -p wa -k T1053.001_14
--w /etc/at.deny -p wa -k T1053.001_15
--w /var/spool/at/ -p wa -k T1053.001_16
--w /etc/anacrontab -p wa -k T1053.003_17
--w /var/log/btmp -p wa -k T1136.001_3
--w /var/log/lastlog -p wa -k T1082_7
--w /var/log/wtmp -p wa -k T1136.001_2
--w /var/run/faillock/ -p wa -k T1082
--w /var/run/utmp -p wa -k T1136.001_1
--a always,exit -F arch=b32 -S ptrace -k T1055.008_1
--a always,exit -F arch=b64 -S ptrace -k T1055.008_2
--a always,exit -F arch=b32 -S ptrace -F a0=0x4 -k T1055.008_3
--a always,exit -F arch=b64 -S ptrace -F a0=0x4 -k T1055.008_4
--a always,exit -F arch=b32 -S ptrace -F a0=0x5 -k T1055.008_5
--a always,exit -F arch=b64 -S ptrace -F a0=0x5 -k T1055.008_6
--a always,exit -F arch=b32 -S ptrace -F a0=0x6 -k T1055.008_7
--a always,exit -F arch=b64 -S ptrace -F a0=0x6 -k T1055.008_8
--w /etc/ld.so.preload -k T1548.001_33
 
 
 {% if ansible_os_family == "RedHat" -%}
