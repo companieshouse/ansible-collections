@@ -86,7 +86,6 @@
 -w /etc/sudoers -p wa -k T1548.003_3
 -w /etc/sysconfig/network -p wa -k audit_network_modifications
 -a always,exit -F perm=x -F auid!=-1 -F path=/sbin/insmod -k T1547.006_1
--a always,exit -F perm=x -F auid!=-1 -F path=/sbin/modprobe -k T1547.006_2
 -a always,exit -F perm=x -F auid!=-1 -F path=/sbin/rmmod -k T1547.006_3
 -w /etc/cron.allow -p wa -k T1053.003_1
 -w /etc/cron.deny -p wa -k T1053.003_2
