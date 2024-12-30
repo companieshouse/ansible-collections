@@ -35,7 +35,7 @@ clamav_freshclam_configuration_changes:
 # Scan scheduling:
 clamav_scanning_minute: "10"
 clamav_scanning_hour: "02"
-  
+
 # clamav_daemon: 'clamav-daemon'
 clamav_daemon_state: started
 clamav_daemon_enabled: true
@@ -44,6 +44,8 @@ clamav_daemon_enabled: true
 clamav_freshclam_daemon_state: started
 clamav_freshclam_daemon_enabled: true
 
+# Configure Freshclam to use the same user as the Daemon uses
+clamav_freshclam_uses_daemon_user: false
 
 # ExcludePath ^/dev/
 # ExcludePath ^/proc/

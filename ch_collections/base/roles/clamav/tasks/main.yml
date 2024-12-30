@@ -11,19 +11,27 @@
 - include_tasks: setup-vars.yml
 
 - name: Ensure ClamAV packages are installed.
-  package: name={{ item }} state=present
+  ansible.builtin.package: name={{ item }} state=present
   with_items: "{{ clamav_packages }}"
   register: clamav_packages_install
 
 - name: Change configuration for the ClamAV Freshclam.
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ clamav_freshclam_config_path }}"
     regexp: "{{ item.regexp | default(omit) }}"
     line: "{{ item.line | default('') }}"
     insertbefore: "{{ item.before | default(omit) }}"
-    firstmatch: "{{ item.firstmatch | default('yes') }}"
+    firstmatch: "{{ item.firstmatch | default('true') }}"
     state: "{{ item.state | default('present') }}"
   with_items: "{{ clamav_freshclam_configuration_changes }}"
+
+- name: Update ClamAV Freshclam configuration to use the Daemon user
+  ansible.builtin.lineinfile:
+    path: "{{ clamav_freshclam_config_path }}"
+    regexp: "^.*DatabaseOwner .*$"
+    line: "DatabaseOwner {{ clamav_user }}"
+    state: present
+  when: clamav_freshclam_uses_daemon_user
 
 # Create socket file for ClamAV
 - name: Create the socket file with correct ownership
@@ -32,20 +40,21 @@
     state: directory
     owner: "{{ clamav_user }}"
     group: "{{ clamav_user }}"
+    mode: 0750
 
 - name: test to see if selinux is running
-  command: getenforce
+  ansible.builtin.command: getenforce
   register: sestatus
   changed_when: false
 
 - name: Set fact based on selinux status output from previous check
-  set_fact:
+  ansible.builtin.set_fact:
     selinux_status: "{{ sestatus.stdout  }}"
 
 - name: SELinux Contexts for configs
   community.general.sefcontext:
     target: "{{ clamav_daemon_localsocket | dirname  }}"
-    setype: antivirus_var_run_t 
+    setype: antivirus_var_run_t
     state: present
   when: selinux_status == "Enforcing"
   notify: restorecon
@@ -53,15 +62,15 @@
 - name: Create persistent SELinux boolean policies
   ansible.posix.seboolean:
     name: "antivirus_can_scan_system"
-    state: yes
-    persistent: yes
+    state: true
+    persistent: true
   when: selinux_status == "Enforcing"
 
 - name: Flush handlers to ensure selinux contexts are correct before continuing
   meta: flush_handlers
 
-- name: Run freshclam after ClamAV packages change.
-  command: freshclam
+- name: Run freshclam after ClamAV packages change
+  ansible.builtin.command: freshclam
   when: clamav_packages_install.changed
   register: freshclam_result
   notify: restart clamav daemon
@@ -71,15 +80,38 @@
     - freshclam_result.stderr.find('locked by another process') != -1
   tags: ['skip_ansible_lint']
 
+- name: Change ownership of ClamAV database to the Daemon user
+  block:
+    - name: Get list of database files
+      ansible.builtin.find:
+        path: /var/lib/clamav
+        file_type: any
+        recurse: true
+      register: freshclam_database
+    - name: Update database file ownership
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        owner: "{{ clamav_user }}"
+        group: "{{ clamav_user }}"
+        mode: 0644
+      loop: "{{ freshclam_database.files }}"
+    - name: Update database ownership
+      ansible.builtin.file:
+        path: /var/lib/clamav
+        owner: "{{ clamav_user }}"
+        group: "{{ clamav_user }}"
+        mode: 0755
+  when: clamav_freshclam_uses_daemon_user
+
 - include_tasks: setup-RedHat-6.yml
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'
 
 - include_tasks: setup-RedHat.yml
-  when: (ansible_os_family == 'RedHat' and ansible_distribution_major_version > '6') or 
+  when: (ansible_os_family == 'RedHat' and ansible_distribution_major_version > '6') or
         (ansible_distribution == 'Amazon' and ansible_distribution_major_version == '2')
 
-- name: Change configuration for the ClamAV daemon.
-  lineinfile:
+- name: Change configuration for the ClamAV daemon
+  ansible.builtin.lineinfile:
     path: "{{ clamav_daemon_config_path }}"
     regexp: '{{ item.regexp }}'
     line: "{{ item.line | default('') }}"
@@ -88,13 +120,16 @@
   with_items: "{{ clamav_daemon_configuration_changes }}"
 
 - name: Setup scanning script and daily scanning
-  block: 
+  block:
     - name: Add clamav user to sudoers file
       ansible.builtin.lineinfile:
         path: /etc/sudoers.d/clamav
         line: '{{ clamav_user }} ALL=(root) NOPASSWD: /usr/bin/clamdscan *'
         validate: 'visudo -cf %s'
-        create: yes
+        create: true
+        owner: root
+        group: root
+        mode: 0640
     - name: Add paths to exclude from scanning to clamd config
       ansible.builtin.lineinfile:
         path: "{{ clamav_daemon_config_path }}"
@@ -109,21 +144,21 @@
         dest: /usr/local/bin/clamav-scan.sh
         owner: "{{ clamav_user }}"
         group: "{{ clamav_user }}"
-        mode: '0655'
-    - name: Add scanning entry to cron 
+        mode: 0655
+    - name: Add scanning entry to cron
       ansible.builtin.cron:
         name: clamav scan
         minute: '{{ clamav_scanning_minute | default("0") }}'
         hour: '{{ clamav_scanning_hour | default("03") }}'
         weekday: "{{ clamav_scanning_weekday | default(omit) }}"
         day: "{{ clamav_scanning_day | default(omit) }}"
-        month:  "{{ clamav_scanning_month | default(omit) }}"
+        month: "{{ clamav_scanning_month | default(omit) }}"
         user: "{{ clamav_user }}"
         job: "/usr/local/bin/clamav-scan.sh"
         cron_file: clamav-scan
 
-- name: Ensure ClamAV daemon is running (if configured).
-  service:
+- name: Ensure ClamAV daemon is running (if configured)
+  ansible.builtin.service:
     name: "{{ clamav_daemon }}"
     state: "{{ clamav_daemon_state }}"
     enabled: "{{ clamav_daemon_enabled }}"
@@ -131,13 +166,13 @@
   poll: 0
   when: ansible_virtualization_type != "docker"
 
-- name: Ensure ClamAV freshclam daemon is running (if configured).
-  service:
+- name: Ensure ClamAV freshclam daemon is running (if configured)
+  ansible.builtin.service:
     name: "{{ clamav_freshclam_daemon }}"
     state: "{{ clamav_freshclam_daemon_state }}"
     enabled: "{{ clamav_freshclam_daemon_enabled }}"
   async: 30
   poll: 0
-  when: 
+  when:
     - ansible_virtualization_type != "docker"
     - clamav_freshclam_daemon is defined

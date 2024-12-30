@@ -1,15 +1,19 @@
 - name: Create /etc/clamd.d/scan.conf file for centos 6
   ansible.builtin.file:
     path: /etc/clamd.d/scan.conf
+    owner: "{{ clamav_user }}"
+    mode: 0644
     state: touch
 
 # Install Cronie for Freshclam
-- name: Install cron (RedHat).
-  package: name=cronie state=present
+- name: Install cron (RedHat)
+  ansible.builtin.package:
+    name: cronie
+    state: present
 
 # Setup Cron job for Freshclam to run every hour
-- name: Freshclam cron.
-  cron:
+- name: Freshclam cron
+  ansible.builtin.cron:
     name: 'Run freshclam'
     state: 'present'
     hour: '*/6'
