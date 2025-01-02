@@ -4,17 +4,17 @@
   when: selinux_status == "Enforcing"
 
 - name: restart clamav daemon
-  service:
+  ansible.builtin.service:
     name: "{{ clamav_daemon }}"
     state: restarted
   async: 30
   poll: 0
-  when: 
-    - clamav_daemon_state != 'stopped' 
+  when:
+    - clamav_daemon_state != 'stopped'
     - ansible_virtualization_type != "docker"
 
 - name: Reload systemd
-  systemd:
+  ansible.builtin.systemd:
     state: stopped
     daemon_reload: true
     name: "{{ clamav_freshclam_daemon }}"
