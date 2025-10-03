@@ -3,3 +3,9 @@
 {{ mountdata.local_mount_point | default(mountname)}} -fstype=nfs,{%for opt in mountdata.mount_options| default(default_mount_options) %}{{opt}}{% if not loop.last %},{%endif%}{%endfor%} {{mountdata.nfs_server_address | default(default_nfs_server_address)}}:/{{ mountdata.nfs_source_mount | default(mountname) }}
 {% endfor -%}
 {% endif -%}
+
+{% if finance_mounts is defined %}
+{% for mountname, mountdata in finance_mounts.items() %}
+{{ mountdata.local_mount_point | default(mountname)}} -fstype=nfs,{%for opt in mountdata.mount_options| default(default_mount_options) %}{{opt}}{% if not loop.last %},{%endif%}{%endfor%} {{mountdata.nfs_server_address | default(finance_nfs_server_address)}}:/{{ mountdata.nfs_source_mount | default(mountname) }}
+{% endfor -%}
+{% endif -%}
