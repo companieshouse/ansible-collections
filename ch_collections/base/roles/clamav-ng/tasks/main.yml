@@ -1,0 +1,20 @@
+---
+# tasks file for clamav-ng
+- name: Load OS specific vars
+  ansible.builtin.include_vars: "{{ lookup('ansible.builtin.first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+        - main.yml
+      paths:
+        - 'vars'
+
+- name: Install ClamAV
+  ansible.builtin.include_tasks: install.yml
+
+- name: Configure ClamAV
+  ansible.builtin.include_tasks: configure.yml

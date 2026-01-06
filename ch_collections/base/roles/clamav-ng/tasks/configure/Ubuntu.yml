@@ -1,0 +1,25 @@
+---
+- name: Configure ClamAV | Check for a ClamAV socket file
+  ansible.builtin.stat:
+    path: "{{ clamav_ng_run_directory }}/{{ clamav_ng_run_socket_file }}"
+  register: clamav_socket
+
+- name: Configure ClamAV | Ensure ClamAV service is stopped
+  ansible.builtin.service:
+    name: "{{ clamav_ng_clamav_service_name }}"
+    state: stopped
+  when: not clamav_socket.stat.exists
+
+- name: Configure ClamAV | Ensure Freshclam service is stopped if present
+  ansible.builtin.service:
+    name: "{{ clamav_ng_freshclam_service_name }}"
+    state: stopped
+  when:
+    - clamav_ng_freshclam_service
+    - not clamav_socket.stat.exists
+
+- name: Configure ClamAV | Remove any freshclam.dat files generated from package install
+  ansible.builtin.file:
+    path: "{{ clamav_ng_db_directory }}/freshclam.dat"
+    state: absent
+  when: not clamav_socket.stat.exists

@@ -1,0 +1,14 @@
+---
+- name: Configure ClamAV | Check for conflicting clamav-update cron drop-in file
+  ansible.builtin.stat:
+    path: /etc/cron.d/clamav-update
+  register: clamav_update
+  changed_when: false
+
+- name: Configure ClamAV | Remove clamav-update cron drop-in
+  ansible.builtin.file:
+    path: /etc/cron.d/clamav-update
+    state: absent
+  when:
+    - clamav_update.stat.exists
+    - clamav_ng_freshclam_service

@@ -1,0 +1,5 @@
+---
+- name: Install ClamAV | Install packages via yum
+  ansible.builtin.yum:
+    name: "{{ clamav_ng_install_packages }}"
+    state: present

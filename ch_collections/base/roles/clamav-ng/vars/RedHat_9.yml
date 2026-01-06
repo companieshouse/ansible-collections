@@ -1,0 +1,3 @@
+---
+clamav_ng_selinux_enabled: true
+clamav_ng_rhel_epel_install_from_url: true

@@ -1,0 +1,70 @@
+---
+- name: Install ClamAV | Perform OS-specific tasks
+  ansible.builtin.include_tasks: "{{ lookup('ansible.builtin.first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+        - main.yml
+      paths:
+        - 'tasks/install'
+
+- name: Install ClamAV | Create log directory
+  ansible.builtin.file:
+    path: "{{ clamav_ng_log_directory }}"
+    owner: "{{ clamav_ng_log_user }}"
+    group: "{{ clamav_ng_log_group }}"
+    mode: '0770'
+    state: directory
+
+- name: Install ClamAV | Touch freshclam.log file
+  ansible.builtin.file:
+    path: "{{ clamav_ng_log_directory }}/freshclam.log"
+    owner: "{{ clamav_ng_log_user }}"
+    group: "{{ clamav_ng_log_group }}"
+    mode: '0660'
+    state: touch
+
+- name: Install ClamAV | Create run directory
+  ansible.builtin.file:
+    path: "{{ clamav_ng_run_directory }}"
+    owner: "{{ clamav_ng_run_user }}"
+    group: "{{ clamav_ng_run_group }}"
+    mode: '0770'
+    state: directory
+
+- name: Install ClamAV | Check for SELinux
+  ansible.builtin.command: getenforce
+  register: selinux_status
+  changed_when: false
+
+- name: Install ClamAV | Set SELinux booleans
+  ansible.posix.seboolean:
+    name: "{{ item }}"
+    persistent: true
+    state: true
+  loop: "{{ clamav_ng_selinux_booleans }}"
+  when: selinux_status.stdout == 'Enforcing'
+
+- name: Install ClamAV | Set SELinux directory contexts
+  community.general.sefcontext:
+    target: "{{ item.target }}"
+    setype: "{{ item.setype }}"
+    state: present
+  loop:
+    - { target: "{{ clamav_ng_log_directory }}", setype: "antivirus_log_t" }
+    - { target: "{{ clamav_ng_run_directory }}", setype: "antivirus_var_run_t" }
+  register: selinux_contexts
+  when: selinux_status.stdout == 'Enforcing'
+
+- name: Install ClamAV | Execute restorecon to relabel files
+  ansible.builtin.command: "restorecon -irv {{ item }}"
+  loop:
+    - "{{ clamav_ng_log_directory }}"
+    - "{{ clamav_ng_run_directory }}"
+  when:
+    - selinux_contexts.changed
+    - selinux_status.stdout == 'Enforcing'

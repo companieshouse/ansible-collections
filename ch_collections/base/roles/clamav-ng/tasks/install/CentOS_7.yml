@@ -1,0 +1,38 @@
+---
+- name: Install ClamAV | Install packages
+  block:
+    - name: Install ClamAV | Fix yum repository links 1/2 - Disable mirrorlist
+      ansible.builtin.replace:
+        path: /etc/yum.repos.d/CentOS-Base.repo
+        regexp: '^mirrorlist(.+)$'
+        replace: '#mirrorlist\1'
+
+    - name: Install ClamAV | Fix yum repository links 2/2 - Enable and update baseurl
+      ansible.builtin.replace:
+        path: /etc/yum.repos.d/CentOS-Base.repo
+        regexp: '^#baseurl=http:\/\/mirror(.+)$'
+        replace: 'baseurl=https:\/\/vault\1'
+
+    - name: Install ClamAV | Install EPEL repository
+      ansible.builtin.yum:
+        name: epel-release
+        state: present
+
+    - name: Install ClamAV | Install packages via yum
+      ansible.builtin.yum:
+        name: "{{ clamav_ng_install_packages }}"
+        state: present
+
+- name: Install ClamAV | Check for conflicting clamd-freshclam service
+  block:
+    - name: Install ClamAV | Populate service facts
+      ansible.builtin.service_facts:
+
+    - name: Install ClamAV | Stop and disable clamd-freshclam
+      ansible.builtin.systemd:
+        name: clamd-freshclam.service
+        enabled: false
+        masked: true
+        state: stopped
+        daemon_reexec: true
+      when: ansible_facts['services']['clamd-freshclam.service']['status']|default('not-found') != 'not-found'

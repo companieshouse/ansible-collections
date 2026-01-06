@@ -1,0 +1,17 @@
+---
+# handlers file for clamav-ng
+
+- name: restart clamav service
+  ansible.builtin.service:
+    name: "{{ clamav_ng_clamav_service_name }}"
+    state: restarted
+
+- name: restart clamonacc service
+  ansible.builtin.service:
+    name: "{{ clamav_ng_clamonacc_service_name }}"
+    state: restarted
+
+- name: restart freshclam service
+  ansible.builtin.service:
+    name: "{{ clamav_ng_freshclam_service_name }}"
+    state: restarted

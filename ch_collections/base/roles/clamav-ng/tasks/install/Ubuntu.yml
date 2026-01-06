@@ -1,0 +1,6 @@
+---
+- name: Install ClamAV | Install packages via apt
+  ansible.builtin.apt:
+    name: "{{ clamav_ng_install_packages }}"
+    state: present
+    update_cache: true

@@ -1,0 +1,46 @@
+# {{ ansible_managed }}
+
+# General
+User {{ clamav_ng_clamav_user }}
+PidFile {{ clamav_ng_run_directory }}/clamd.pid
+LocalSocket {{ clamav_ng_run_directory }}/{{ clamav_ng_run_socket_file }}
+LocalSocketGroup {{ clamav_ng_clamav_localsocketgroup }}
+LocalSocketMode 660
+FixStaleSocket yes
+TemporaryDirectory /var/tmp
+DatabaseDirectory {{ clamav_ng_db_directory }}
+MaxThreads {{ clamav_ng_clamav_maxthreads }}
+
+# Logging
+ExtendedDetectionInfo yes
+LogFile {{ clamav_ng_log_directory }}/clamd.log
+LogFileMaxSize {{ clamav_ng_clamav_logfilemaxsize }}
+LogRotate yes
+LogSyslog yes
+LogTime yes
+LogVerbose yes
+
+
+# File scanning
+{% if clamav_ng_clamav_detectbrokenexecutables %}
+DetectBrokenExecutables yes
+{% else %}
+AlertBrokenExecutables yes
+{% endif %}
+{% for clamav_exclude_path in clamav_ng_clamav_exclude_paths %}
+ExcludePath ^{{ clamav_exclude_path }}
+{% endfor %}
+
+
+{% if clamav_ng_clamonacc_enabled %}
+# On-access Scanning
+{% for clamonacc_distro_option in clamav_ng_clamonacc_distro_options %}
+{{ clamonacc_distro_option }}
+{% endfor %}
+OnAccessPrevention yes
+{% for clamonacc_include_path in clamav_ng_clamonacc_include_paths %}
+OnAccessIncludePath {{ clamonacc_include_path }}
+{% endfor %}
+OnAccessExcludeRootUID true
+OnAccessExcludeUname {{ clamav_ng_clamav_user }}
+{% endif %}

@@ -1,0 +1,28 @@
+---
+clamav_ng_install_packages:
+  - clamav
+  - clamav-daemon
+  - clamav-freshclam
+
+clamav_ng_log_group: clamav
+
+clamav_ng_run_group: clamav
+
+clamav_ng_clamav_config_file: /etc/clamav/clamd.conf
+clamav_ng_clamav_service_name: clamav-daemon
+clamav_ng_clamav_group: clamav
+clamav_ng_clamav_user: clamav
+clamav_ng_clamav_exclude_paths:
+  - /dev/
+  - /proc/
+  - /sys/
+  - /snap/
+clamav_ng_clamav_localsocketgroup: clamav
+clamav_ng_run_socket_file: clamd.ctl
+
+clamav_ng_clamonacc_service: false
+
+clamav_ng_freshclam_config_file: /etc/clamav/freshclam.conf
+clamav_ng_freshclam_service_name: clamav-freshclam
+clamav_ng_freshclam_group: clamav
+clamav_ng_freshclam_user: clamav

@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+
+# General
+DatabaseDirectory {{ clamav_ng_db_directory }}
+DatabaseOwner {{ clamav_ng_clamav_user }}
+NotifyClamd {{ clamav_ng_clamav_config_file }}
+PrivateMirror {{ clamav_ng_freshclam_privatemirror }}
+
+# Logging
+UpdateLogFile {{ clamav_ng_log_directory }}/freshclam.log
+LogFileMaxSize {{ clamav_ng_freshclam_logfilemaxsize }}
+LogRotate yes
+LogSyslog yes
+LogTime yes
+LogVerbose yes

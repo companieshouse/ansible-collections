@@ -1,0 +1,5 @@
+---
+clamav_ng_install_packages:
+  - clamav1.4
+  - clamav1.4-freshclam
+  - clamd1.4

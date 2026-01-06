@@ -1,0 +1,10 @@
+---
+- name: Install ClamAV | Install EPEL repository
+  ansible.builtin.yum:
+    name: epel-release
+    state: present
+
+- name: Install ClamAV | Install packages via yum
+  ansible.builtin.yum:
+    name: "{{ clamav_ng_install_packages }}"
+    state: present

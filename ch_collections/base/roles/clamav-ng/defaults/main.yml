@@ -1,0 +1,62 @@
+---
+# defaults file for clamav-ng
+clamav_ng_install_packages:
+  - clamav
+  - clamav-freshclam
+  - clamd
+
+# General vars
+clamav_ng_selinux_enabled: false
+clamav_ng_selinux_booleans:
+  - antivirus_can_scan_system
+
+clamav_ng_db_directory: /var/lib/clamav
+
+clamav_ng_log_directory: /var/log/clamav
+clamav_ng_log_group: virusgroup
+clamav_ng_log_user: "{{ clamav_ng_clamav_user }}"
+
+clamav_ng_run_directory: /var/run/clamav
+clamav_ng_run_socket_file: "clamd.sock"
+clamav_ng_run_group: virusgroup
+clamav_ng_run_user: "{{ clamav_ng_clamav_user }}"
+
+clamav_ng_rhel_epel_install_from_url: false
+clamav_ng_rhel_epel_repo_file: /etc/yum.repos.d/epel.repo
+clamav_ng_rhel_epel_repo_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_facts.distribution_major_version }}.noarch.rpm"
+clamav_ng_rhel_epel_repo_gpg_key_url: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts.distribution_major_version }}"
+
+# ClamAV service vars
+clamav_ng_clamav_config_file: /etc/clamd.d/scan.conf
+clamav_ng_clamav_service_name: "clamd@scan"
+clamav_ng_clamav_group: clamscan
+clamav_ng_clamav_user: clamscan
+clamav_ng_clamav_localsocketgroup: virusgroup
+clamav_ng_clamav_logfilemaxsize: 5M
+clamav_ng_clamav_maxthreads: 32
+# ClamAV 0.103.x and newer always detect broken executables
+# This legacy option should be enabled on versions <= 0.100.x (e.g. RHEL6)
+clamav_ng_clamav_detectbrokenexecutables: false
+# Filesystem paths that should be excluded from scanning
+clamav_ng_clamav_exclude_paths:
+  - /dev/
+  - /proc/
+  - /sys/
+
+# ClamAV on-access scanner vars
+clamav_ng_clamonacc_enabled: false
+clamav_ng_clamonacc_service: true
+clamav_ng_clamonacc_service_name: clamav-clamonacc
+# A list of distribution-specific on-access scanning options
+clamav_ng_clamonacc_distro_options: []
+clamav_ng_clamonacc_include_paths: []
+
+# ClamAV freshclam vars
+clamav_ng_freshclam_cron: false
+clamav_ng_freshclam_service: true
+clamav_ng_freshclam_config_file: /etc/freshclam.conf
+clamav_ng_freshclam_service_name: clamav-freshclam
+clamav_ng_freshclam_group: clamupdate
+clamav_ng_freshclam_user: clamupdate
+clamav_ng_freshclam_logfilemaxsize: 5M
+clamav_ng_freshclam_privatemirror: http://clamav-mirror.sharedservices.aws.internal

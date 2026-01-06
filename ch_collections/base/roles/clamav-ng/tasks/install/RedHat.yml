@@ -1,0 +1,24 @@
+---
+- name: Install ClamAV | Install packages
+  block:
+    - name: Install ClamAV | Install EPEL repository
+      ansible.builtin.dnf:
+        name: epel-release
+        state: present
+
+    - name: Install ClamAV | Install ClamAV packages via dnf
+      ansible.builtin.dnf:
+        name: "{{ clamav_ng_install_packages }}"
+        state: present
+
+    - name: Install ClamAV | Populate service facts
+      ansible.builtin.service_facts:
+
+    - name: Install ClamAV | Stop and disable conflicting service if it exists
+      ansible.builtin.systemd:
+        name: clamd-freshclam.service
+        enabled: false
+        masked: true
+        state: stopped
+        daemon_reexec: true
+      when: ansible_facts['services']['clamd-freshclam.service']['status']|default('not-found') != 'not-found'
