@@ -3,3 +3,17 @@
   ansible.builtin.dnf:
     name: "{{ clamav_ng_install_packages }}"
     state: present
+
+- name: Install ClamAV | Check for conflicting clamd-freshclam service
+  block:
+    - name: Install ClamAV | Populate service facts
+      ansible.builtin.service_facts:
+
+    - name: Install ClamAV | Stop and disable clamd-freshclam
+      ansible.builtin.systemd:
+        name: clamd-freshclam.service
+        enabled: false
+        masked: true
+        state: stopped
+        daemon_reexec: true
+      when: ansible_facts['services']['clamd-freshclam.service']['status']|default('not-found') != 'not-found'
