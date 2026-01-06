@@ -46,7 +46,7 @@
 
 - name: Configure ClamAV | Install crontab for freshclam database updates
   ansible.builtin.cron:
-    cron_file: freshclam
+    cron_file: clamav-ng-freshclam
     name: "freshclam"
     job: "{{ freshclam_path.stdout }} --config-file={{ clamav_ng_freshclam_config_file }} > /dev/null 2>&1"
     minute: "{{ 60 | random(seed=inventory_hostname) }}"

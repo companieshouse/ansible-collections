@@ -33,7 +33,7 @@ clamav_ng_clamav_group: clamscan
 clamav_ng_clamav_user: clamscan
 clamav_ng_clamav_localsocketgroup: virusgroup
 clamav_ng_clamav_logfilemaxsize: 5M
-clamav_ng_clamav_maxthreads: 32
+clamav_ng_clamav_maxthreads: 16
 # ClamAV 0.103.x and newer always detect broken executables
 # This legacy option should be enabled on versions <= 0.100.x (e.g. RHEL6)
 clamav_ng_clamav_detectbrokenexecutables: false
