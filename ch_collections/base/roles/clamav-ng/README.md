@@ -20,8 +20,7 @@ Note: RHEL 6 support necessitates the use of either Ansible 2.9 or 2.10 due to t
 Requirements
 ------------
 
-- botocore
-- boto3
+N/A
 
 Role Variables
 --------------
@@ -31,7 +30,8 @@ A description of the settable variables for this role should go here, including 
 Dependencies
 ------------
 
-ansible.posix
+- ansible.posix
+- community.general
 
 Example Playbook
 ----------------
