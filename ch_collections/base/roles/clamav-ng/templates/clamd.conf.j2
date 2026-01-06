@@ -7,7 +7,7 @@ LocalSocket {{ clamav_ng_run_directory }}/{{ clamav_ng_run_socket_file }}
 LocalSocketGroup {{ clamav_ng_clamav_localsocketgroup }}
 LocalSocketMode 660
 FixStaleSocket yes
-TemporaryDirectory /var/tmp
+TemporaryDirectory /tmp
 DatabaseDirectory {{ clamav_ng_db_directory }}
 MaxThreads {{ clamav_ng_clamav_maxthreads }}
 
