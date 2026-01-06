@@ -6,7 +6,7 @@ clamav_ng_install_packages:
   - clamd
 
 # General vars
-clamav_ng_selinux_enabled: false
+clamav_ng_selinux_enabled: true
 clamav_ng_selinux_booleans:
   - antivirus_can_scan_system
 
@@ -16,7 +16,7 @@ clamav_ng_log_directory: /var/log/clamav
 clamav_ng_log_group: virusgroup
 clamav_ng_log_user: "{{ clamav_ng_clamav_user }}"
 
-clamav_ng_run_directory: /var/run/clamav
+clamav_ng_run_directory: /var/run/clamd.scan
 clamav_ng_run_socket_file: "clamd.sock"
 clamav_ng_run_group: virusgroup
 clamav_ng_run_user: "{{ clamav_ng_clamav_user }}"
@@ -33,7 +33,7 @@ clamav_ng_clamav_group: clamscan
 clamav_ng_clamav_user: clamscan
 clamav_ng_clamav_localsocketgroup: virusgroup
 clamav_ng_clamav_logfilemaxsize: 5M
-clamav_ng_clamav_maxthreads: 16
+clamav_ng_clamav_maxthreads: "{{ ansible_processor_nproc * 4 }}"
 # ClamAV 0.103.x and newer always detect broken executables
 # This legacy option should be enabled on versions <= 0.100.x (e.g. RHEL6)
 clamav_ng_clamav_detectbrokenexecutables: false
@@ -42,6 +42,10 @@ clamav_ng_clamav_exclude_paths:
   - /dev/
   - /proc/
   - /sys/
+  - /run/
+  - /etc/
+  - /var/log/audit/
+  - /var/lib/selinux/
 
 # ClamAV on-access scanner vars
 clamav_ng_clamonacc_enabled: false
@@ -59,4 +63,5 @@ clamav_ng_freshclam_service_name: clamav-freshclam
 clamav_ng_freshclam_group: clamupdate
 clamav_ng_freshclam_user: clamupdate
 clamav_ng_freshclam_logfilemaxsize: 5M
+# Scheme required to force ClamAV >= 0.103.x to use HTTP
 clamav_ng_freshclam_privatemirror: http://clamav-mirror.sharedservices.aws.internal
