@@ -4,6 +4,7 @@ clamav_ng_install_packages:
   - clamav-update
   - clamd
 
-clamav_ng_selinux_enabled: true
-
-clamav_ng_run_directory: /var/run/clamd.scan
+clamav_ng_clamav_exclude_paths:
+  - /dev/
+  - /proc/
+  - /sys/

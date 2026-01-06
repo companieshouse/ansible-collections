@@ -6,7 +6,10 @@ clamav_ng_install_packages:
 
 clamav_ng_log_group: clamav
 
+clamav_ng_run_directory: /var/run/clamav
 clamav_ng_run_group: clamav
+
+clamav_ng_selinux_enabled: false
 
 clamav_ng_clamav_config_file: /etc/clamav/clamd.conf
 clamav_ng_clamav_service_name: clamav-daemon
