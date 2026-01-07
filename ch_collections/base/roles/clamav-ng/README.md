@@ -14,7 +14,12 @@ As well as the various versions of ClamAV available from the respective vendor r
 - 0.103.x
 - 1.4.x
 
-Note: RHEL 6 support necessitates the use of either Ansible 2.9 or 2.10 due to the version of Python installed on the hosts.
+Note: RHEL 6 support necessitates the use of either Ansible 2.9 or 2.10 due to the version of Python installed on the hosts. As a general guide, the following Ansible versions should work:
+- RHEL 6, < Ansible 2.11
+- RHEL 8 & 9, >= Ansible 2.10
+- CentOS 7, >= Ansible 2.10
+- Ubuntu 20.04 (Focal), >= Ansible 2.10
+- Ubuntu 24.04 (Noble), >= Ansible 2.15
 
 
 Requirements
