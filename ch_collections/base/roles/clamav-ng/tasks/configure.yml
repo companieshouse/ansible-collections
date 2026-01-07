@@ -26,7 +26,7 @@
 - name: Configure | Check for existing Freshclam cron configurations
   block:
     - name: Configure | List user crontabs
-      ansible.builtin.shell: ls -1 /var/spool/cron/
+      ansible.builtin.shell: "ls -1 {{ clamav_ng_crontab_spool_path }}"
       register: user_crontab_list
       changed_when: false
 
@@ -56,6 +56,19 @@
   when:
     - not clamav_ng_freshclam_service
     - clamav_ng_freshclam_cron
+
+- name: Configure | Perform OS-specific tasks
+  ansible.builtin.include_tasks: "{{ lookup('ansible.builtin.first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+        - main.yml
+      paths:
+        - 'tasks/configure'
 
 - name: Configure | Update freshclam database if necessary
   block:
@@ -112,19 +125,6 @@
     - clamav_ng_clamonacc_enabled
     - (sysctl.stdouu|int < 524288)
     - sysctl.rc == 0
-
-- name: Configure | Perform OS-specific tasks
-  ansible.builtin.include_tasks: "{{ lookup('ansible.builtin.first_found', params) }}"
-  vars:
-    params:
-      files:
-        - "{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
-        - "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml"
-        - "{{ ansible_distribution }}.yml"
-        - "{{ ansible_os_family }}.yml"
-        - main.yml
-      paths:
-        - 'tasks/configure'
 
 - name: Configure | Enable and start the Freshclam service
   ansible.builtin.service:

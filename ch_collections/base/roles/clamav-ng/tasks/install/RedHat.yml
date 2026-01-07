@@ -29,7 +29,7 @@
         path: /etc/yum.repos.d/redhat-rhui.repo
       register: repo_exists
 
-    - name: Install | Enable CodeReady repo on RHEL9
+    - name: Install | Enable CodeReady repository
       ansible.builtin.ini_file:
         dest: /etc/yum.repos.d/redhat-rhui.repo
         section: "codeready-builder-for-rhel-{{ ansible_distribution_major_version }}-rhui-rpms"
@@ -66,7 +66,6 @@
         option: enabled
         value: "1"
         no_extra_spaces: true
-      when: epel_repo_file.stat.exists
 
     - name: Install | Install packages via dnf
       ansible.builtin.dnf:
