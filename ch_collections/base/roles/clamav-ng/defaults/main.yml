@@ -16,6 +16,7 @@ clamav_ng_db_group: virusgroup
 clamav_ng_db_user: clamupdate
 
 clamav_ng_log_directory: /var/log/clamav
+clamav_ng_log_file: clamd.log
 clamav_ng_log_group: virusgroup
 clamav_ng_log_user: "{{ clamav_ng_clamav_user }}"
 

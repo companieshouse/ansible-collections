@@ -13,7 +13,7 @@ MaxThreads {{ clamav_ng_clamav_maxthreads }}
 
 # Logging
 ExtendedDetectionInfo yes
-LogFile {{ clamav_ng_log_directory }}/clamd.log
+LogFile {{ clamav_ng_log_directory }}/{{ clamav_ng_log_file }}
 LogFileMaxSize {{ clamav_ng_clamav_logfilemaxsize }}
 LogRotate yes
 LogSyslog yes
