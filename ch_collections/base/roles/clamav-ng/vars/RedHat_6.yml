@@ -17,6 +17,9 @@ clamav_ng_clamav_exclude_paths:
   - /dev/
   - /proc/
   - /sys/
+  - /etc/
+  - /selinux/
+  - /var/lib/amazon/ssm/ipc/
 
 clamav_ng_clamonacc_service: false
 clamav_ng_clamonacc_distro_options:
