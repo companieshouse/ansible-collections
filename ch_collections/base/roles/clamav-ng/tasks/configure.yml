@@ -133,6 +133,12 @@
     state: started
   when: clamav_ng_freshclam_service
 
+- name: Configure | Enable and start the ClamAV service
+  ansible.builtin.service:
+    name: "{{ clamav_ng_clamav_service_name }}"
+    enabled: true
+    state: started
+
 - name: Configure | Enable and start the ClamAV on-access scanner service
   ansible.builtin.service:
     name: "{{ clamav_ng_clamonacc_service_name }}"
@@ -141,12 +147,6 @@
   when:
     - clamav_ng_clamonacc_enabled
     - clamav_ng_clamonacc_service
-
-- name: Configure | Enable and start the ClamAV service
-  ansible.builtin.service:
-    name: "{{ clamav_ng_clamav_service_name }}"
-    enabled: true
-    state: started
 
 - name: Configure | Restart Freshclam service if present
   ansible.builtin.assert: { that: true, quiet: true }
