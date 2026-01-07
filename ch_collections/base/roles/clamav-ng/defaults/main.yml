@@ -11,6 +11,8 @@ clamav_ng_selinux_booleans:
   - antivirus_can_scan_system
 
 clamav_ng_db_directory: /var/lib/clamav
+clamav_ng_db_group: virusgroup
+clamav_ng_db_user: clamupdate
 
 clamav_ng_log_directory: /var/log/clamav
 clamav_ng_log_group: virusgroup
@@ -47,6 +49,7 @@ clamav_ng_clamav_exclude_paths:
   - /etc/
   - /var/log/audit/
   - /var/lib/selinux/
+  - /var/lib/amazon/ssm/ipc/
 
 # ClamAV on-access scanner vars
 clamav_ng_clamonacc_enabled: false

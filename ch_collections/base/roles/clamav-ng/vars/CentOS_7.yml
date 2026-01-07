@@ -3,8 +3,3 @@ clamav_ng_install_packages:
   - clamav
   - clamav-update
   - clamd
-
-clamav_ng_clamav_exclude_paths:
-  - /dev/
-  - /proc/
-  - /sys/

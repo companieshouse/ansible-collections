@@ -1,5 +1,5 @@
 ---
-- name: Configure ClamAV | Install ClamAV configuration file
+- name: Configure | Install ClamAV configuration file
   ansible.builtin.template:
     src: clamd.conf.j2
     dest: "{{ clamav_ng_clamav_config_file }}"
@@ -9,7 +9,7 @@
   register: clamd_config
   notify: restart clamav service
 
-- name: Configure ClamAV | Install Freshclam configuration file
+- name: Configure | Install Freshclam configuration file
   ansible.builtin.template:
     src: freshclam.conf.j2
     dest: "{{ clamav_ng_freshclam_config_file }}"
@@ -18,25 +18,25 @@
     mode: '0644'
   register: freshclam_config
 
-- name: Configure ClamAV | Get freshclam binary path
+- name: Configure | Get freshclam binary path
   ansible.builtin.shell: which freshclam
   register: freshclam_path
   changed_when: false
 
-- name: Configure ClamAV | Check for existing Freshclam cron configurations
+- name: Configure | Check for existing Freshclam cron configurations
   block:
-    - name: Configure ClamAV | List user crontabs
+    - name: Configure | List user crontabs
       ansible.builtin.shell: ls -1 /var/spool/cron/
       register: user_crontab_list
       changed_when: false
 
-    - name: Configure ClamAV | Verify user crontabs are present
+    - name: Configure | Verify user crontabs are present
       ansible.builtin.set_fact:
         user_crontabs_present: true
       when: user_crontab_list.stdout != ""
       changed_when: false
 
-    - name: Configure ClamAV | Comment existing Freshclam entries in user crontabs
+    - name: Configure | Comment existing Freshclam entries in user crontabs
       ansible.builtin.replace:
         dest: "/var/spool/cron/{{ item }}"
         regexp: '^([^#].*freshclam.*)$'
@@ -44,7 +44,7 @@
       loop: "{{ user_crontab_list.stdout_lines }}"
       when: user_crontabs_present is defined
 
-- name: Configure ClamAV | Install crontab for freshclam database updates
+- name: Configure | Install crontab for freshclam database updates
   ansible.builtin.cron:
     cron_file: clamav-ng-freshclam
     name: "freshclam"
@@ -57,51 +57,51 @@
     - not clamav_ng_freshclam_service
     - clamav_ng_freshclam_cron
 
-- name: Configure ClamAV | Update freshclam database if necessary
+- name: Configure | Update freshclam database if necessary
   block:
-    - name: Configure ClamAV | Check for existing main.cvd
+    - name: Configure | Check for existing main.cvd
       ansible.builtin.stat:
         path: "{{ clamav_ng_db_directory }}/main.cvd"
       register: main_db_file
       changed_when: false
 
-    - name: Configure ClamAV | Check age of existing main.cvd
+    - name: Configure | Check age of existing main.cvd
       ansible.builtin.set_fact:
         main_db_age: "{{ (ansible_date_time.epoch|float - main_db_file.stat.mtime) }}"
       when: main_db_file.stat.exists
       changed_when: false
 
-    - name: Configure ClamAV | Check for existing main.cld
+    - name: Configure | Check for existing main.cld
       ansible.builtin.stat:
         path: "{{ clamav_ng_db_directory }}/main.cld"
       register: main_db_uncompressed_file
       changed_when: false
 
-    - name: Configure ClamAV | Check age of existing main.cld
+    - name: Configure | Check age of existing main.cld
       ansible.builtin.set_fact:
         main_db_age: "{{ (ansible_date_time.epoch|float - main_db_uncompressed_file.stat.mtime) }}"
       when:
         - main_db_uncompressed_file.stat.exists
       changed_when: false
 
-    - name: Configure ClamAV | Ensure freshclam service is stopped
+    - name: Configure | Ensure freshclam service is stopped
       ansible.builtin.service:
         name: "{{ clamav_ng_freshclam_service_name }}"
         state: stopped
       when: clamav_ng_freshclam_service
       changed_when: false
 
-    - name: Configure ClamAV | Execute freshclam to update database files
+    - name: Configure | Execute freshclam to update database files
       ansible.builtin.shell: "{{ freshclam_path.stdout }} --config-file={{ clamav_ng_freshclam_config_file }}"
       when: (not (main_db_file.stat.exists or main_db_uncompressed_file.stat.exists)) or
             (main_db_age|float > (3 * 86400))
 
-- name: Configure ClamAV | Get current setting for inotify max_user_watches
+- name: Configure | Get current setting for inotify max_user_watches
   ansible.builtin.command: sysctl -n fs.inotify.max_user_watches
   register: sysctl
   when: clamav_ng_clamonacc_enabled
 
-- name: Configure ClamAV | Increase inotify max_user_watches limits for on-access scanning
+- name: Configure | Increase inotify max_user_watches limits for on-access scanning
   ansible.posix.sysctl:
     name: fs.inotify.max_user_watches
     value: '524288'
@@ -113,7 +113,7 @@
     - (sysctl.stdouu|int < 524288)
     - sysctl.rc == 0
 
-- name: Configure ClamAV | Perform OS-specific tasks
+- name: Configure | Perform OS-specific tasks
   ansible.builtin.include_tasks: "{{ lookup('ansible.builtin.first_found', params) }}"
   vars:
     params:
@@ -126,14 +126,14 @@
       paths:
         - 'tasks/configure'
 
-- name: Configure ClamAV | Enable and start the Freshclam service
+- name: Configure | Enable and start the Freshclam service
   ansible.builtin.service:
     name: "{{ clamav_ng_freshclam_service_name }}"
     enabled: true
     state: started
   when: clamav_ng_freshclam_service
 
-- name: Configure ClamAV | Enable and start the ClamAV on-access scanner service
+- name: Configure | Enable and start the ClamAV on-access scanner service
   ansible.builtin.service:
     name: "{{ clamav_ng_clamonacc_service_name }}"
     enabled: true
@@ -142,13 +142,13 @@
     - clamav_ng_clamonacc_enabled
     - clamav_ng_clamonacc_service
 
-- name: Configure ClamAV | Enable and start the ClamAV service
+- name: Configure | Enable and start the ClamAV service
   ansible.builtin.service:
     name: "{{ clamav_ng_clamav_service_name }}"
     enabled: true
     state: started
 
-- name: Configure ClamAV | Restart Freshclam service if present
+- name: Configure | Restart Freshclam service if present
   ansible.builtin.assert: { that: true, quiet: true }
   changed_when: true
   when:
@@ -156,7 +156,7 @@
     - clamav_ng_freshclam_service
   notify: restart freshclam service
 
-- name: Configure ClamAV | Restart ClamAV on-access service if present
+- name: Configure | Restart ClamAV on-access service if present
   ansible.builtin.assert: { that: true, quiet: true }
   changed_when: true
   when:

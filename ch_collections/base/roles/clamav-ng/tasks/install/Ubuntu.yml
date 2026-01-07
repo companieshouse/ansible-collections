@@ -1,5 +1,5 @@
 ---
-- name: Install ClamAV | Install packages via apt
+- name: Install | Install packages via apt
   ansible.builtin.apt:
     name: "{{ clamav_ng_install_packages }}"
     state: present

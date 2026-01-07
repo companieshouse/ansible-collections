@@ -2,6 +2,9 @@
 clamav_ng_install_packages:
   - clamav
 
+clamav_ng_db_group: clam
+clamav_ng_gb_user: clam
+
 clamav_ng_log_group: clam
 
 clamav_ng_run_directory: /var/run/clamav

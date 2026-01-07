@@ -1,5 +1,5 @@
 ---
-- name: Install ClamAV | Perform OS-specific tasks
+- name: Install | Perform OS-specific tasks
   ansible.builtin.include_tasks: "{{ lookup('ansible.builtin.first_found', params) }}"
   vars:
     params:
@@ -12,7 +12,7 @@
       paths:
         - 'tasks/install'
 
-- name: Install ClamAV | Create log directory
+- name: Install | Ensure log directory exists and is configured
   ansible.builtin.file:
     path: "{{ clamav_ng_log_directory }}"
     owner: "{{ clamav_ng_log_user }}"
@@ -21,15 +21,15 @@
     state: directory
 
 # Following resolves a bug on Amazon Linux 2023
-- name: Install ClamAV | Validate freshclam.log file
+- name: Install | Validate freshclam.log file
   block:
-    - name: Install ClamAV | Check for an existing freshclam.log file
+    - name: Install | Check for an existing freshclam.log file
       ansible.builtin.stat:
         path: "{{ clamav_ng_log_directory }}/freshclam.log"
       register: freshclam_log
       changed_when: false
 
-    - name: Install ClamAV | Create new freshclam.log file
+    - name: Install | Create new freshclam.log file
       ansible.builtin.file:
         path: "{{ clamav_ng_log_directory }}/freshclam.log"
         owner: "{{ clamav_ng_log_user }}"
@@ -38,7 +38,7 @@
         state: touch
       when: not freshclam_log.stat.exists
 
-- name: Install ClamAV | Create run directory
+- name: Install | Ensure run directory exists and is configured
   ansible.builtin.file:
     path: "{{ clamav_ng_run_directory }}"
     owner: "{{ clamav_ng_run_user }}"
@@ -46,14 +46,22 @@
     mode: '0770'
     state: directory
 
-- name: Install ClamAV | Perform SELinux actions
+- name: Install | Ensure database directory exists and is configured
+  ansible.builtin.file:
+    path: "{{ clamav_ng_db_directory }}"
+    owner: "{{ clamav_ng_db_user }}"
+    group: "{{ clamav_ng_db_group }}"
+    mode: '0770'
+    state: directory
+
+- name: Install | Perform SELinux actions
   block:
-    - name: Install ClamAV | Check SELinux status
+    - name: Install | Check SELinux status
       ansible.builtin.command: getenforce
       register: selinux_status
       changed_when: false
 
-    - name: Install ClamAV | Set SELinux booleans
+    - name: Install | Set SELinux booleans
       ansible.posix.seboolean:
         name: "{{ item }}"
         persistent: true
@@ -61,20 +69,22 @@
       loop: "{{ clamav_ng_selinux_booleans }}"
       when: selinux_status.stdout == 'Enforcing'
 
-    - name: Install ClamAV | Set SELinux directory contexts
+    - name: Install | Set SELinux directory contexts
       community.general.sefcontext:
         target: "{{ item.target }}"
         setype: "{{ item.setype }}"
         state: present
       loop:
+        - { target: "{{ clamav_ng_db_directory }}", setype: "antivirus_db_t" }
         - { target: "{{ clamav_ng_log_directory }}", setype: "antivirus_log_t" }
         - { target: "{{ clamav_ng_run_directory }}", setype: "antivirus_var_run_t" }
       register: selinux_contexts
       when: selinux_status.stdout == 'Enforcing'
 
-    - name: Install ClamAV | Execute restorecon to relabel files
+    - name: Install | Execute restorecon to relabel files
       ansible.builtin.command: "restorecon -irv {{ item }}"
       loop:
+        - "{{ clamav_ng_db_directory }}"
         - "{{ clamav_ng_log_directory }}"
         - "{{ clamav_ng_run_directory }}"
       when:

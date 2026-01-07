@@ -1,15 +1,15 @@
 ---
-- name: Install ClamAV | Install packages via dnf
+- name: Install | Install packages via dnf
   ansible.builtin.dnf:
     name: "{{ clamav_ng_install_packages }}"
     state: present
 
-- name: Install ClamAV | Check for conflicting clamd-freshclam service
+- name: Install | Check for conflicting clamd-freshclam service
   block:
-    - name: Install ClamAV | Populate service facts
+    - name: Install | Populate service facts
       ansible.builtin.service_facts:
 
-    - name: Install ClamAV | Stop and disable clamd-freshclam
+    - name: Install | Stop and disable clamd-freshclam
       ansible.builtin.systemd:
         name: clamd-freshclam.service
         enabled: false

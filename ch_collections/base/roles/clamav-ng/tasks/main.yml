@@ -13,8 +13,8 @@
       paths:
         - 'vars'
 
-- name: Install ClamAV
+- name: Install
   ansible.builtin.include_tasks: install.yml
 
-- name: Configure ClamAV
+- name: Configure
   ansible.builtin.include_tasks: configure.yml
