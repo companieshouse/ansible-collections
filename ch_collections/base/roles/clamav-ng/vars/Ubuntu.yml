@@ -4,6 +4,8 @@ clamav_ng_install_packages:
   - clamav-daemon
   - clamav-freshclam
 
+clamav_ng_crontab_spool_path: /var/spool/cron/crontabs
+
 clamav_ng_db_group: clamav
 clamav_ng_db_user: clamav
 
@@ -21,14 +23,15 @@ clamav_ng_clamav_user: clamav
 clamav_ng_clamav_exclude_paths:
   - /dev/
   - /proc/
+  - /run/
   - /sys/
   - /snap/
+  - /var/lib/amazon/ssm/ipc/
 clamav_ng_clamav_localsocketgroup: clamav
 clamav_ng_run_socket_file: clamd.ctl
 
 clamav_ng_clamonacc_service: false
 
 clamav_ng_freshclam_config_file: /etc/clamav/freshclam.conf
-clamav_ng_freshclam_service_name: clamav-freshclam
 clamav_ng_freshclam_group: clamav
 clamav_ng_freshclam_user: clamav

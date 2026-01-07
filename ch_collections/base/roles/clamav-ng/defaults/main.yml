@@ -6,6 +6,7 @@ clamav_ng_install_packages:
   - clamd
 
 # General vars
+clamav_ng_crontab_spool_path: /var/spool/cron
 clamav_ng_selinux_enabled: true
 clamav_ng_selinux_booleans:
   - antivirus_can_scan_system
