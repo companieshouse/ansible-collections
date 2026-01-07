@@ -26,6 +26,7 @@ DetectBrokenExecutables yes
 {% else %}
 AlertBrokenExecutables yes
 {% endif %}
+MaxDirectoryRecursion {{ clamav_ng_clamav_maxdirectoryrecursion }}
 {% for clamav_exclude_path in clamav_ng_clamav_exclude_paths %}
 ExcludePath ^{{ clamav_exclude_path }}
 {% endfor %}
