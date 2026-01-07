@@ -14,7 +14,6 @@ clamav_ng_clamav_config_file: /etc/clamd.conf
 clamav_ng_clamav_service_name: clamd
 clamav_ng_clamav_group: clam
 clamav_ng_clamav_user: clam
-clamav_ng_clamav_detectbrokenexecutables: true
 clamav_ng_clamav_localsocketgroup: clam
 clamav_ng_clamav_exclude_paths:
   - /dev/
