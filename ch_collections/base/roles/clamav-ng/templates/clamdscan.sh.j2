@@ -1,0 +1,9 @@
+#!/bin/bash
+
+## Defaults
+LOG_DIR="{{ clamav_ng_log_directory }}"
+LOG_FILE="${LOG_DIR}/{{ clamav_ng_clamdscan_log_file }}"
+DATETIME_STRING="+%b %_d %T"
+
+echo "$(date "${DATETIME_STRING}") : Starting ClamAV scan" | tee -a "${LOG_FILE}"
+clamdscan --config-file="{{ clamav_ng_clamav_config_file }}" --infected --multiscan --fdpass --stdout --log="${LOG_FILE}" {{ clamav_ng_clamdscan_scan_path }}

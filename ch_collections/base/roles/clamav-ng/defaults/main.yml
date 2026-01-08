@@ -37,7 +37,7 @@ clamav_ng_clamav_group: clamscan
 clamav_ng_clamav_user: clamscan
 clamav_ng_clamav_localsocketgroup: virusgroup
 clamav_ng_clamav_logfilemaxsize: 5M
-clamav_ng_clamav_maxthreads: "{{ ansible_processor_nproc * 4 }}"
+clamav_ng_clamav_maxthreads: "{{ ansible_processor_nproc + 1 }}"
 clamav_ng_clamav_maxdirectoryrecursion: 30
 # Filesystem paths that should be excluded from scanning
 clamav_ng_clamav_exclude_paths:
@@ -68,3 +68,10 @@ clamav_ng_freshclam_user: clamupdate
 clamav_ng_freshclam_logfilemaxsize: 5M
 # Scheme required to force ClamAV >= 0.103.x to use HTTP
 clamav_ng_freshclam_privatemirror: http://clamav-mirror.sharedservices.aws.internal
+
+# ClamAV caldmscan vars
+clamav_ng_clamdscan_enabled: true
+clamav_ng_clamdscan_log_file: scan.log
+clamav_ng_clamdscan_scan_path: "/*"
+clamav_ng_clamdscan_window_start_hour: 1
+clamav_ng_clamsdcan_window_end_hour: 4

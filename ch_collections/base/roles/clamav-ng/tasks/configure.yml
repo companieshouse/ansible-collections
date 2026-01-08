@@ -49,13 +49,60 @@
     cron_file: clamav-ng-freshclam
     name: "freshclam"
     job: "{{ freshclam_path.stdout }} --config-file={{ clamav_ng_freshclam_config_file }} > /dev/null 2>&1"
-    minute: "{{ 60 | random(seed=inventory_hostname) }}"
+    minute: "{{ 60 | ansible.builtin.random(seed=inventory_hostname) }}"
     hour: "*/4"
     state: present
     user: "{{ clamav_ng_freshclam_user }}"
   when:
     - not clamav_ng_freshclam_service
     - clamav_ng_freshclam_cron
+
+- name: Configure | Setup clamdscan daily system scan
+  block:
+    - name: Configure | Deploy system scan script
+      ansible.builtin.template:
+        src: clamdscan.sh.j2
+        dest: /usr/local/bin/clamav-ng-clamdscan.sh
+        owner: root
+        group: root
+        mode: '0750'
+
+    - name: Configure | Install crontab for clamdscan system scan
+      ansible.builtin.cron:
+        cron_file: clamav-ng-clamdscan
+        name: "clamdscan"
+        job: "/usr/local/bin/clamav-ng-clamdscan.sh"
+        minute: "{{ 60 | ansible.builtin.random(seed=inventory_hostname) }}"
+        hour: "{{ clamav_ng_clamsdcan_window_end_hour | ansible.builtin.random(start=clamav_ng_clamdscan_window_start_hour, seed=inventory_hostname) }}"
+        state: present
+        user: root
+  when: clamav_ng_clamdscan_enabled
+
+- name: Configure | Remove conflicting legacy cron drop-in files
+  block:
+    - name: Configure | Check for conflicting clamav-update cron drop-in file
+      ansible.builtin.stat:
+        path: /etc/cron.d/clamav-update
+      register: clamav_update
+      changed_when: false
+
+    - name: Configure | Remove clamav-update cron drop-in
+      ansible.builtin.file:
+        path: /etc/cron.d/clamav-update
+        state: absent
+      when: clamav_update.stat.exists
+
+    - name: Configure | Check for conflicting clamav-scan cron drop-in file
+      ansible.builtin.stat:
+        path: /etc/cron.d/clamav-scan
+      register: clamav_scan
+      changed_when: false
+
+    - name: Configure | Remove clamav-scan cron drop-in
+      ansible.builtin.file:
+        path: /etc/cron.d/clamav-scan
+        state: absent
+      when: clamav_scan.stat.exists
 
 - name: Configure | Perform OS-specific tasks
   ansible.builtin.include_tasks: "{{ lookup('ansible.builtin.first_found', params) }}"
