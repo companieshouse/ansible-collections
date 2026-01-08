@@ -21,7 +21,7 @@ clamav_ng_log_group: virusgroup
 clamav_ng_log_user: "{{ clamav_ng_clamav_user }}"
 
 clamav_ng_run_directory: /var/run/clamd.scan
-clamav_ng_run_socket_file: "clamd.sock"
+clamav_ng_run_socket_file: clamd.sock
 clamav_ng_run_group: virusgroup
 clamav_ng_run_user: "{{ clamav_ng_clamav_user }}"
 
