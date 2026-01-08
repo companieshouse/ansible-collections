@@ -69,7 +69,7 @@ clamav_ng_freshclam_logfilemaxsize: 5M
 # Scheme required to force ClamAV >= 0.103.x to use HTTP
 clamav_ng_freshclam_privatemirror: http://clamav-mirror.sharedservices.aws.internal
 
-# ClamAV caldmscan vars
+# ClamAV cladmscan vars
 clamav_ng_clamdscan_enabled: true
 clamav_ng_clamdscan_log_file: scan.log
 clamav_ng_clamdscan_scan_path: "/*"
